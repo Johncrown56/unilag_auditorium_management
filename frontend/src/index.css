@@ -1,0 +1,302 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+  
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+  
+    .chat-height {
+      @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
+    }
+    .inbox-height {
+      @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
+    }
+  }
+
+.submitButton {
+    @apply w-full px-5 py-3 text-base font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800
+}
+
+.protectedSubmitButton {
+  @apply flex justify-center rounded bg-primary-700 py-2 px-6 font-medium text-grayblue hover:shadow-1
+}
+
+.inputLabelClass {
+  @apply mb-3 block text-sm font-medium text-black dark:text-white
+ }
+
+.inputClass {
+  @apply w-full rounded border border-stroke py-3 pl-11.5 pr-4.5 text-black focus:border-primary-700 focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary-700
+}
+
+.inputClass2 {
+  @apply w-full rounded border text-sm border-stroke bg-white py-3 px-4.5 text-black focus:border-primary-600 focus-visible:outline-none dark:bg-meta-4 dark:border-gray-600 dark:text-white dark:focus:border-primary-600 dark:placeholder-gray-400 focus:ring-primary-500 dark:focus:ring-primary-500
+}
+
+.selectClass {
+  @apply w-full rounded border text-sm border-stroke bg-transparent py-3 px-12 relative z-20 appearance-none outline-none transition focus:border-primary-600 active:border-primary-600 dark:border-form-strokedark dark:bg-form-input focus:ring-primary-500 dark:focus:ring-primary-500
+}
+
+.checkboxClass {
+  @apply focus:ring-2 w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800
+}
+
+.resetButton {
+  @apply flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white
+}
+
+.disabled {
+    @apply cursor-not-allowed bg-primary-700 opacity-25
+}
+
+.form-error {
+    @apply mt-2 text-xs text-red-600 dark:text-red-600
+}
+
+.dropzoneClass {
+  @apply p-16 my-2 relative block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary-600 bg-gray-100 dark:bg-meta-4
+}
+
+.react-select__control {
+  @apply relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-1.5 outline-none transition focus:border-primary-600 active:border-primary-600 dark:border-form-strokedark
+}
+
+
+/* third-party libraries CSS */
+/* start react datepicker */
+
+.react-datepicker__input-container input {
+  @apply block w-full text-base md:text-sm bg-white border border-gray-300 rounded shadow-sm
+}
+
+.react-datepicker-popper {
+  @apply z-40 w-full text-sm bg-white shadow px-3 py-2 border-2 border-gray-200 rounded
+}
+
+.react-datepicker-left {
+  @apply absolute left-0 right-auto !important 
+  /* top-11 transform-none */
+}
+
+.react-datepicker-right {
+  @apply absolute right-0 left-auto !important
+  /* top-11 transform-none */
+}
+
+.react-datepicker__portal {
+  @apply absolute z-10 w-72 text-sm transform-none bg-white shadow px-3 py-2 top-12 right-0 border-2 border-gray-200 rounded
+}
+
+.react-datepicker__month-container {
+  @apply flex flex-col
+}
+
+.react-datepicker__month {
+  @apply flex flex-col
+}
+
+.react-datepicker__current-month {
+  @apply ml-2.5 text-lg font-semibold text-gray-800
+}
+
+.react-datepicker__week {
+  @apply flex justify-around
+}
+
+.react-datepicker__day-names {
+  @apply flex justify-around text-gray-400 font-medium text-center text-xs
+}
+
+.react-datepicker__day-name {
+  @apply w-8 h-8 flex items-center justify-center py-1 rounded-full
+}
+
+.react-datepicker__navigation {
+  @apply absolute top-2
+}
+
+.react-datepicker__navigation--previous {
+  @apply right-12 w-8 h-8 rounded transition flex items-center justify-center hover:bg-gray-200
+}
+
+.react-datepicker__navigation--next {
+  @apply right-4 w-8 h-8 rounded transition flex items-center justify-center hover:bg-gray-200
+}
+
+.react-datepicker__day {
+  @apply cursor-pointer hover:bg-gray-100 mb-1 w-8 h-8 flex items-center justify-center py-1 text-sm leading-loose transition text-gray-700 rounded
+}
+
+.react-datepicker__day--disabled {
+  @apply cursor-not-allowed opacity-40 hover:bg-transparent
+}
+
+.react-datepicker__day--outside-month {
+  @apply text-gray-300
+}
+
+.react-datepicker__day--in-range {
+  @apply bg-gray-200
+}
+
+.react-datepicker__day--in-selecting-range {
+  @apply bg-primary-100
+}
+
+.react-datepicker__day--selecting-range-start {
+  @apply bg-white border-2 border-blue-500
+}
+
+.react-datepicker__day--selecting-range-end {
+  @apply bg-white border-2 border-primary-400
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--today {
+  @apply bg-primary-400 text-white hover:bg-primary-700
+}
+
+.react-datepicker__day--range-start {
+  @apply bg-primary-400 text-white hover:text-gray-700 hover:bg-white
+}
+
+.react-datepicker__day--range-end {
+  @apply bg-primary-400 text-white hover:text-gray-700 hover:bg-white
+}
+
+.react-datepicker__time-list-item {
+@apply py-2 cursor-pointer hover:bg-primary-600 rounded-md
+}
+
+.react-datepicker__header--time--only{
+@apply py-2 font-bold 
+}
+
+.react-datepicker__aria-live{
+@apply hidden
+}
+
+.react-datepicker__day--keyboard-selected {
+@apply hover:bg-primary-400
+}
+
+.react-datepicker__navigation {
+@apply p-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-primary-500
+}
+
+.react-datepicker__navigation--previous {
+@apply mr-2
+}
+/* end react datepicker */
+
+.tableCheckbox:checked ~ div span {
+@apply opacity-100;
+}
+.tableCheckbox:checked ~ div {
+@apply bg-primary-600 border-primary-600;
+}
+
+.apexcharts-legend-text {
+@apply !text-body dark:!text-bodydark;
+}
+.apexcharts-text {
+@apply !fill-body dark:!fill-bodydark;
+}
+.apexcharts-xcrosshairs {
+@apply !fill-stroke dark:!fill-strokedark;
+}
+.apexcharts-gridline {
+@apply !stroke-stroke dark:!stroke-strokedark;
+}
+.apexcharts-series.apexcharts-pie-series path {
+@apply dark:!stroke-transparent;
+}
+.apexcharts-legend-series {
+@apply !inline-flex gap-1.5;
+}
+.apexcharts-tooltip.apexcharts-theme-light {
+@apply dark:!bg-boxdark dark:!border-strokedark;
+}
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+@apply dark:!bg-meta-4 dark:!border-strokedark;
+}
+.apexcharts-xaxistooltip, .apexcharts-yaxistooltip {
+@apply dark:!bg-meta-4 dark:!border-meta-4 dark:!text-bodydark1;
+}
+.apexcharts-xaxistooltip-bottom:after {
+@apply dark:!border-b-meta-4;
+}
+.apexcharts-xaxistooltip-bottom:before {
+@apply dark:!border-b-meta-4;
+
+}
+
+
+.map-btn .jvm-zoom-btn {
+@apply flex items-center justify-center w-7.5 h-7.5 rounded border border-stroke dark:border-strokedark hover:border-primary-600 dark:hover:border-primary-600 bg-white hover:bg-primary-600 text-body hover:text-white dark:text-bodydark dark:hover:text-white text-2xl leading-none px-0 pt-0 pb-0.5;
+}
+.mapOne .jvm-zoom-btn {
+@apply left-auto top-auto bottom-0;
+}
+.mapOne .jvm-zoom-btn.jvm-zoomin {
+@apply right-10;
+}
+.mapOne .jvm-zoom-btn.jvm-zoomout {
+@apply right-0;
+}
+.mapTwo .jvm-zoom-btn {
+@apply top-auto bottom-0;
+}
+.mapTwo .jvm-zoom-btn.jvm-zoomin {
+@apply left-0;
+}
+.mapTwo .jvm-zoom-btn.jvm-zoomout {
+@apply left-10;
+}
+
+.taskCheckbox:checked ~ .box span {
+@apply opacity-100;
+}
+.taskCheckbox:checked ~ p {
+@apply line-through;
+}
+.taskCheckbox:checked ~ .box {
+@apply bg-primary-600 border-primary-600 dark:border-primary-600;
+}
+
+.custom-input-date::-webkit-calendar-picker-indicator {
+background-position: center;
+background-repeat: no-repeat;
+background-size: 20px;
+}
+.custom-input-date-1::-webkit-calendar-picker-indicator {
+background-image: url("./assets/imgs/icon/icon-calendar.svg");
+}
+.custom-input-date-2::-webkit-calendar-picker-indicator {
+background-image: url("./assets/imgs/icon/icon-arrow-down.svg");
+}
+
+[x-cloak] {
+display: none !important;
+}
+
+.jvectormap-tip {
+background-color: #F8FAFC!important;
+/* font-family: Satoshi, sans-serif;; */
+}
+
+.map-btn .jvectormap-container .jvectormap-zoomin, 
+.map-btn .jvectormap-container .jvectormap-zoomout {
+@apply bottom-0 top-auto right-0 left-auto flex items-center justify-center w-7.5 h-7.5 rounded border border-stroke dark:border-strokedark hover:border-primary-600 dark:hover:border-primary-600 bg-white hover:bg-primary-600 text-body hover:text-white dark:text-bodydark dark:hover:text-white text-2xl leading-none px-0 pt-0 pb-0.5;
+}
+
+.map-btn .jvectormap-container .jvectormap-zoomin {
+right: 45px;
+}
