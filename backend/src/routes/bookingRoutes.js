@@ -6,9 +6,19 @@ const {
   fetch,
   fetchOne,
   update,
+  checkAvailability,
 } = require("../controllers/bookingControllers");
 
-router.route("/").post(protect, create).get(protect, fetch);
+const multer = require("multer");
+
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 30 * 1024 * 1024 },
+}); // 30MB is the file upload limit
+
+router.route("/").post(protect, upload.none(), create).get(protect, fetch);
 router.route("/:id").get(protect, fetchOne).put(protect, update);
+router.route("/check").post(protect, checkAvailability);
 
 module.exports = router;

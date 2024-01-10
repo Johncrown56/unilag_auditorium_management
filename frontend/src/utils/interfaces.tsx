@@ -121,8 +121,21 @@ export interface IBooking {
   approved: boolean;
   start: IEventDate;
   end: IEventDate;
+  available: boolean;
   features: any[];
+  discount: string;
+  paymentMethod: IReactSelect;
+  receipt: FileObject[];
   paymentStatus: boolean;
+  payment?: IPaymentDetails;
+}
+
+export interface IPaymentDetails {
+  totalAmount: number;
+  cautionFee: number;
+  cleaningCharges: number;
+  vat: string;
+  eventDays: number;
 }
 
 export interface IEventDate {
@@ -144,6 +157,7 @@ export type IBookingBoolean = {
   type: boolean;
   start: IBooleanDate;
   end: IBooleanDate;
+  available: boolean;
   [key: string]: boolean | IBooleanDate | any;
 };
 

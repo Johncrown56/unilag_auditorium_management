@@ -1,61 +1,25 @@
-import React from "react";
 import { NumericFormat } from "react-number-format";
-import { AuditoriumResponse, IBooking } from "../../utils/interfaces";
-import { useSelector } from "react-redux";
+import { IBooking } from "../../utils/interfaces";
 
 type Props = {
   params: IBooking;
-  auditoriums: AuditoriumResponse[];
+  prices: Array<any>;
+  totalAmount: number;
+  currentStep: number;
+  handleChange: (event: any) => void;
+  onDiscountClick: () => void;
 };
 
 const PaymentReview = (props: Props) => {
-  const { params, auditoriums } = props;
-  const selectedAuditorium = auditoriums.filter(
-    (a: any) => a.audID === params?.name?.value
-  )[0];
-
-  const { user } = useSelector((state: any) => state.auth);
-
-  const prices = [
-    {
-      label: "Fee",
-      amount:
-        selectedAuditorium?.price != undefined
-          ? user?.userCategory === "Student"
-            ? selectedAuditorium?.studentPrice
-            : selectedAuditorium?.price
-          : 0,
-    },
-    {
-      label: "VAT (7.5%)",
-      amount:
-        selectedAuditorium?.vat != undefined ? selectedAuditorium?.vat : 0,
-    },
-    {
-      label: "Caution Fee (Refundable)",
-      amount:
-        selectedAuditorium?.cautionFee != undefined
-          ? selectedAuditorium?.cautionFee
-          : 0,
-    },
-    {
-      label: "Cleaning Charges",
-      amount:
-        selectedAuditorium?.cleaningCharges != undefined
-          ? selectedAuditorium?.cleaningCharges
-          : 0,
-    },
-  ];
-
-  // Calculate the sum of the amounts
-  const calculateTotalAmount = (prices: any) => {
-    return prices.reduce(
-      (sum: any, item: any) => Number(sum) + parseFloat(item.amount || 0),
-      0
-    );
-  };
-
-  const totalAmount = calculateTotalAmount(prices);
+  const {
+    params,
+    currentStep,
+    prices,
+    totalAmount,
+    handleChange,
+    onDiscountClick,
+  } = props;
+  const { discount } = params;
 
   return (
     <section
@@ -71,6 +35,41 @@ const PaymentReview = (props: Props) => {
         </h2>
       </div>
 
+      {currentStep == 4 && (
+        <div className="px-2 py-6 sm:px-0">
+          <form>
+            <label
+              htmlFor="discount"
+              className="block font-medium text-sm text-black dark:text-white"
+            >
+              Discount code
+            </label>
+            <div className="mt-1 flex gap-2">
+              <input
+                type="text"
+                id="discount"
+                name="discount"
+                value={discount}
+                onChange={handleChange}
+                className="inputClass2"
+              />
+              <button
+                type="button"
+                onClick={onDiscountClick}
+                disabled={discount?.length == 0}
+                className={`${
+                  discount?.length == 0
+                    ? "bg-gray-200 text-white disabled"
+                    : "bg-red-600 text-white"
+                } rounded px-4 text-sm font-medium bie bmz bne bnq bog bok`}
+              >
+                Apply
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
       <dl className="mt-1 m-0">
         {prices.map((item, i) => (
           <div
@@ -81,12 +80,16 @@ const PaymentReview = (props: Props) => {
               <span>{item.label}</span>
             </dt>
             <dd className="text-sm font-medium text-black dark:text-white">
-              <NumericFormat
-                value={Number(item.amount).toFixed(2)}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"₦"}
-              />
+              {item?.value ? (
+                item.value
+              ) : (
+                <NumericFormat
+                  value={Number(item.amount).toFixed(2)}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₦"}
+                />
+              )}
             </dd>
           </div>
         ))}

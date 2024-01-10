@@ -44,7 +44,7 @@ const TableThree = (props: Props) => {
                   .slice(-5)
                   .reverse()
                   .map((d, i) => (
-                    <tr>
+                    <tr key={i}>
                       <td className="border-b border-[#eee] py-3 px-2 pl-9 dark:border-strokedark xl:pl-11">
                         <h5 className="font-medium text-black dark:text-white">
                           {d.bookingId}

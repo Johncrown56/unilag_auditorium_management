@@ -2,7 +2,7 @@ import { BiDollarCircle, BiMessageSquareDetail } from "react-icons/bi";
 import { BsCalendar, BsCreditCard, BsGear, BsPerson } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
 import { PiWarehouseBold } from "react-icons/pi";
-import { HiOutlineBookOpen } from "react-icons/hi2";
+import { HiCalendar, HiOutlineBookOpen } from "react-icons/hi2";
 import moment from "moment";
 import { IMenu } from "../utils/interfaces";
 
@@ -96,11 +96,12 @@ export const menus: IMenu[] = [
         name: "Referrals",
         link: "/referrals",
         icon: <BiDollarCircle />,
+        badge: "Coming Soon",
       },
     ],
   },
   {
-    name: "Admin",
+    name: "Admino",
     section: [
       {
         name: "Auditorium",
@@ -124,6 +125,12 @@ export const menus: IMenu[] = [
         icon: <HiOutlineBookOpen />,
         submenus: [],
       },
+      {
+        name: "Calendar",
+        link: "/calendar",
+        icon: <HiCalendar />,
+        submenus: [],
+      },
     ],
   },
 ];
@@ -133,4 +140,17 @@ export const userCategories = [
   "Staff",
   "Individual",
   "Organization",
+];
+
+export const paymentOptions = [
+  {
+    value: "Remita",
+    label: "Remita",
+    color: "bg-red-400",
+  },
+  {
+    value: "Cash Transfer",
+    label: "Cash Transfer",
+    color: "bg-blue-400",
+  },
 ];

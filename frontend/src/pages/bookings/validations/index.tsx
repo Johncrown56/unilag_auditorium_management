@@ -49,8 +49,30 @@ export const step2ValidationSchema = yup.object({
       ),
     time: yup.date().required("Please enter the end time"),
   }),
+  available: yup
+    .bool()
+    .oneOf([true], "Auditorium booked for the Selected Date."),
 });
 
 export const step3ValidationSchema = yup.object({
-  name: yup.string().required("Please select auditorium"),
+  paymentMethod: yup
+    .object({
+      value: yup.string(),
+      label: yup.string(),
+    })
+    .required("Please select payment method"),
+  //yup.string().required("Please select payment method"),
 });
+
+export const step4ValidationSchema = yup.object().shape({
+  paymentStatus: yup
+    .bool()
+    .oneOf([true], "Please make payment using the selected payment option"),
+  receipt: yup
+    .array()
+    .min(1, "Please upload your receipt")
+    .required("Receipt is required"),
+});
+// export const eventDateValidationSchema = yup.object({
+//   available: yup.boolean().required("Selected Date not available"),
+// });

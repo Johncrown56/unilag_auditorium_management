@@ -139,6 +139,10 @@
   @apply cursor-not-allowed opacity-40 hover:bg-transparent
 }
 
+.react-datepicker__time-list-item--disabled{
+  @apply cursor-not-allowed opacity-40 hover:bg-transparent
+}
+
 .react-datepicker__day--outside-month {
   @apply text-gray-300
 }
@@ -299,4 +303,10 @@ background-color: #F8FAFC!important;
 
 .map-btn .jvectormap-container .jvectormap-zoomin {
 right: 45px;
+}
+
+/* Full calendar css */
+
+.fc .fc-button-primary {
+  @apply bg-primary-600;
 }

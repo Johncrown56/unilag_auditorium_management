@@ -13,6 +13,7 @@ import {
   IDateProps,
   IFeature,
   IFormState,
+  IPaymentDetails,
   IReactSelect,
   IStep,
   IString,
@@ -28,8 +29,13 @@ import {
   step1ValidationSchema,
   step2ValidationSchema,
   step3ValidationSchema,
+  step4ValidationSchema,
 } from "./validations";
-import { setNestedProperty } from "../../utils/functions";
+import {
+  calculateTotalAmount,
+  checkValidTime,
+  setNestedProperty,
+} from "../../utils/functions";
 import Step1 from "./steps/step1";
 import Step2 from "./steps/step2";
 import Step3 from "./steps/step3";
@@ -39,6 +45,8 @@ import {
   create,
   reset as resetBooking,
 } from "../../features/bookings/bookingSlice";
+import Step4 from "./steps/step4";
+import { PaymentSummary } from "../../utils/constant";
 
 type Props = {};
 
@@ -51,6 +59,10 @@ const BookAuditorium = (props: Props) => {
     type: 0,
     approved: false,
     paymentStatus: false,
+    available: false,
+    paymentMethod: { value: "", label: "" },
+    receipt: [],
+    discount: "",
     start: { date: null, time: null },
     end: { date: null, time: null },
   };
@@ -59,10 +71,18 @@ const BookAuditorium = (props: Props) => {
     purpose: false,
     remarks: false,
     type: false,
+    available: false,
     start: { date: false, time: false },
     end: { date: false, time: false },
+    paymentMethod: false,
   };
-  const totalSteps = 3;
+  const totalSteps = 4;
+  const titles = {
+    1: "Booking Information",
+    2: "Date and Time Information",
+    3: "Review Booking",
+    4: "Make Payment",
+  };
 
   const generateInitialDisabled = () => {
     const initialDisabled: IStep = {};
@@ -82,11 +102,11 @@ const BookAuditorium = (props: Props) => {
   };
 
   const [formState, setFormState] = useState<IFormState>(initialState);
-
   const [allFeatures, setAllFeatures] = useState<IFeature[]>([]);
   const [categories, setCategories] = useState<Array<any>>([]);
-  const [auditoriums, setAuditoriums] = useState([]);
+  const [auditoriums, setAuditoriums] = useState<any>([]);
   const [open, setOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [modalContent, setModalContent] = useState({
     title: "",
     message: <span></span>,
@@ -117,13 +137,54 @@ const BookAuditorium = (props: Props) => {
     message: message2,
   } = useSelector((state: any) => state.booking);
 
+  const { user } = useSelector((state: any) => state.auth);
+
+  const selectedAuditorium = auditoriums.filter(
+    (a: any) => a.audID === params?.name?.value
+  )[0];
+
+  // Convert date strings to moment objects
+  const startDateMoment = params?.start?.date
+    ? moment(params?.start?.date)
+    : moment();
+  const endDateMoment = params?.end?.date
+    ? moment(params?.end?.date)
+    : moment();
+
+  // Calculate the difference of event days
+  const differenceInDays = endDateMoment.diff(startDateMoment, "days") + 1;
+  const calculatePriceDiscount =
+    (Number(selectedAuditorium?.discount) / 100) *
+    Number(selectedAuditorium?.price);
+
+  // Determine the price to show for user
+  const price =
+    selectedAuditorium?.price != undefined
+      ? user?.userCategory === "Student"
+        ? Number(selectedAuditorium?.studentPrice) * differenceInDays
+        : Number(selectedAuditorium?.discount) > 0
+        ? (Number(selectedAuditorium?.price) - calculatePriceDiscount) *
+          differenceInDays
+        : Number(selectedAuditorium?.price) * differenceInDays
+      : 0;
+
+  // show payment summary
+  const prices = PaymentSummary(selectedAuditorium, differenceInDays, price);
+  const totalAmount = calculateTotalAmount(prices);
+  //totalAmount && setTotalPrice(totalAmount);
+
+  useEffect(() => {
+    totalAmount && setTotalPrice(totalAmount);
+  }, [prices]);
+
+  const resultObject = prices.reduce((acc: any, item) => {
+    acc[item?.key] = item?.value ? item?.value : item?.amount;
+    return acc;
+  }, {});
+
   useEffect(() => {
     setFormState((prevState) => ({ ...prevState, mount: true }));
   }, []);
-
-  useEffect(() => {
-    console.log(formState.params);
-  }, [formState.params]);
 
   const customSetState = (name: string, value: any) => {
     setFormState((prevState) => ({
@@ -168,6 +229,12 @@ const BookAuditorium = (props: Props) => {
         [name]: { ...(prevState.params[name] as {}), [type!]: value },
       },
     }));
+    validateEventDate();
+  };
+
+  const onCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    customSetState(name, checked);
   };
 
   const onFocus = (
@@ -220,13 +287,11 @@ const BookAuditorium = (props: Props) => {
   }, [data1, isError1, isSuccess1, message1, dispatch]);
 
   useEffect(() => {
-    console.log(type2);
     if (isError2) {
       toast.error(message2);
     }
     if (isSuccess2 && data2 != null) {
       // && type2 === "booking/create/fulfilled"
-      // if response is Success
       //toast.success(message2);
       const msg = (
         <span>
@@ -299,12 +364,18 @@ const BookAuditorium = (props: Props) => {
     if (currentStep < totalSteps) {
       return (
         <button
-          disabled={stepDisabled}
-          className={`${stepDisabled ? "disabled" : ""} protectedSubmitButton`}
+          disabled={stepDisabled || isLoading2}
+          className={`${
+            stepDisabled || isLoading2 ? "disabled" : ""
+          } protectedSubmitButton`}
           type="button"
           onClick={next}
         >
-          Next
+          <ButtonLoader
+            isLoading={isLoading2}
+            text="Next"
+            loadingText="Loading"
+          />
         </button>
       );
     }
@@ -312,12 +383,15 @@ const BookAuditorium = (props: Props) => {
   };
 
   const submitButton = () => {
-    const { currentStep } = formState;
+    const { currentStep, disabled } = formState;
+    const stepDisabled = disabled[`step${currentStep}`] || false;
     if (currentStep === totalSteps) {
       return (
         <button
-          className={`${isLoading2 ? "disabled" : ""} protectedSubmitButton`}
-          disabled={isLoading2}
+          className={`${
+            isLoading2 || stepDisabled ? "disabled" : ""
+          } protectedSubmitButton`}
+          disabled={isLoading2 || stepDisabled}
           type="submit"
         >
           <ButtonLoader
@@ -329,16 +403,6 @@ const BookAuditorium = (props: Props) => {
       );
     }
     return null;
-  };
-
-  const checkValidTime = (time: Date) => {
-    const isBetween7AMand6PM = moment(time).isBetween(
-      moment(time).set({ hour: 7, minute: 0, second: 0 }),
-      moment(time).set({ hour: 18, minute: 0, second: 0 }),
-      null,
-      "[]"
-    );
-    return isBetween7AMand6PM ? true : false;
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -353,32 +417,28 @@ const BookAuditorium = (props: Props) => {
     } else if (!checkValidTime(endTime!)) {
       toast.error("End Time must be between 7AM and 6PM.");
     } else {
-      console.log(formState);
-      const {
-        name,
-        purpose,
-        remarks,
-        start,
-        end,
-        type,
-        features,
-        approved,
-        paymentStatus,
-      } = params;
-      const values = {
-        name,
-        audId: name?.value,
-        purpose,
-        remarks,
-        start,
-        end,
-        type,
-        features,
-        approved,
-        paymentStatus,
+      const { cautionFee, cleaningCharges, vat, eventDays } = resultObject;
+      const payment: IPaymentDetails = {
+        totalAmount: totalPrice,
+        cautionFee,
+        cleaningCharges,
+        vat,
+        eventDays: Number(eventDays),
       };
+      const values = {
+        ...params,
+        paymentPlatform: params?.paymentMethod?.value,
+        audId: params.name?.value,
+        payment,
+      };
+      console.log(values);
       dispatch(create(values));
     }
+  };
+
+  const GetTitle = () => {
+    const tit = titles[currentStep as keyof typeof titles];
+    return <span>{tit}</span>;
   };
 
   const validateForm = async () => {
@@ -386,6 +446,7 @@ const BookAuditorium = (props: Props) => {
       1: step1ValidationSchema,
       2: step2ValidationSchema,
       3: step3ValidationSchema,
+      4: step4ValidationSchema,
     };
     const validationSchema =
       validationSchemas[currentStep as keyof typeof validationSchemas] ||
@@ -421,8 +482,39 @@ const BookAuditorium = (props: Props) => {
     validateForm();
   }, [params]);
 
-  const closeModal = () => {
-    setOpen(false);
+  const validateEventDate = async () => {
+    const { name, start, end } = formState.params;
+    if (end.date !== null && start.date !== null) {
+      try {
+        const request = {
+          audId: name?.value,
+          start,
+          end,
+        };
+        setFormState((prevState) => ({
+          ...prevState,
+          params: { ...prevState.params, available: false },
+        }));
+        const response = await api.post("api/bookings/check", request);
+        console.log(response.data);
+        const { available } = response.data.data;
+        setFormState((prevState) => ({
+          ...prevState,
+          params: { ...prevState.params, available },
+          touched: { ...prevState.touched, available: true },
+        }));
+        await step2ValidationSchema.validate(params, { abortEarly: false });
+        if (available == false) {
+          toast.error(response.data.message);
+        }
+      } catch (error: any) {
+        console.log(error);
+        //toast.error("Error validating date");
+      }
+    }
+    // else {
+    //   console.log("Date not set");
+    // }
   };
 
   const openModal = (
@@ -439,80 +531,106 @@ const BookAuditorium = (props: Props) => {
     setFormState(initialState);
   };
 
+  const onDiscountClick = () => {
+    // call api to validate and process discount
+  };
   return (
     <>
-      <div className="mx-auto max-w-270">
-        <Breadcrumb pageName="Book Auditorium" />
+      {mount && (
+        <>
+          <div className="mx-auto max-w-270">
+            <Breadcrumb pageName="Book Auditorium" />
 
-        <div className="grid grid-cols-5 gap-8">
-          <div className="col-span-7 xl:col-span-3">
-            <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  Book Auditorium
-                </h3>
-              </div>
-              <div className="p-7">
-                <form onSubmit={handleSubmit}>
-                  <Step1
-                    currentStep={currentStep}
-                    params={params}
-                    formErrors={formErrors}
-                    touched={touched}
-                    disabled={disabled}
-                    auditoriums={auditoriums}
-                    allFeatures={allFeatures}
-                    eventCategories={categories}
-                    setAllFeatures={setAllFeatures}
-                    handleChange={handleChange}
-                    handleSelectChange={handleSelectChange}
-                    onSelectFocus={onSelectFocus}
-                    onMultiSelectChange={handleArrayChange}
-                    onFocus={onFocus}
-                  />
-                  <Step2
-                    currentStep={currentStep}
-                    params={params}
-                    formErrors={formErrors}
-                    touched={touched}
-                    disabled={disabled}
-                    handleDateChange={handleDateChange}
-                    onDateFocus={onDateFocus}
-                    handleChange={handleChange}
-                    onFocus={onFocus}
-                  />
-                  <Step3
-                    currentStep={currentStep}
-                    params={params}
-                    formErrors={formErrors}
-                    touched={touched}
-                    disabled={disabled}
-                    allFeatures={allFeatures}
-                    auditoriums={auditoriums}
-                    eventCategories={categories}
-                  />
-
-                  <div className="flex justify-end gap-4.5">
-                    {previousButton()}
-                    {nextButton()}
-                    {submitButton()}
+            <div className="grid grid-cols-5 gap-8">
+              <div className="col-span-7 xl:col-span-3">
+                <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                  <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                    <h3 className="font-medium text-black dark:text-white">
+                      <GetTitle />
+                    </h3>
                   </div>
-                </form>
+                  <div className="p-7">
+                    <form onSubmit={handleSubmit}>
+                      <Step1
+                        currentStep={currentStep}
+                        params={params}
+                        formErrors={formErrors}
+                        touched={touched}
+                        disabled={disabled}
+                        auditoriums={auditoriums}
+                        allFeatures={allFeatures}
+                        eventCategories={categories}
+                        setAllFeatures={setAllFeatures}
+                        handleChange={handleChange}
+                        handleSelectChange={handleSelectChange}
+                        onSelectFocus={onSelectFocus}
+                        onMultiSelectChange={handleArrayChange}
+                        onFocus={onFocus}
+                      />
+                      <Step2
+                        currentStep={currentStep}
+                        params={params}
+                        formErrors={formErrors}
+                        touched={touched}
+                        disabled={disabled}
+                        handleDateChange={handleDateChange}
+                        onDateFocus={onDateFocus}
+                        handleChange={handleChange}
+                        onFocus={onFocus}
+                      />
+                      <Step3
+                        currentStep={currentStep}
+                        params={params}
+                        formErrors={formErrors}
+                        touched={touched}
+                        disabled={disabled}
+                        allFeatures={allFeatures}
+                        auditoriums={auditoriums}
+                        eventCategories={categories}
+                        handleSelectChange={handleSelectChange}
+                        onSelectFocus={onSelectFocus}
+                      />
+                      <Step4
+                        currentStep={currentStep}
+                        params={params}
+                        formErrors={formErrors}
+                        touched={touched}
+                        disabled={disabled}
+                        totalPrice={totalPrice}
+                        onCheckBoxChange={onCheckBoxChange}
+                        setReceipt={setFormState}
+                      />
+
+                      <div className="flex justify-end gap-4.5">
+                        {previousButton()}
+                        {nextButton()}
+                        {submitButton()}
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-5 xl:col-span-2">
+                <PaymentReview
+                  prices={prices}
+                  totalAmount={totalAmount}
+                  params={params}
+                  currentStep={currentStep}
+                  handleChange={handleChange}
+                  onDiscountClick={onDiscountClick}
+                />
               </div>
             </div>
           </div>
-          <div className="col-span-5 xl:col-span-2">
-            <PaymentReview auditoriums={auditoriums} params={params} />
-          </div>
-        </div>
-      </div>
-      <SuccessModal
-        open={open}
-        setOpen={setOpen}
-        resetParams={resetParams}
-        params={params}
-        modalContent={modalContent}
-      />
+          <SuccessModal
+            open={open}
+            setOpen={setOpen}
+            resetParams={resetParams}
+            params={params}
+            modalContent={modalContent}
+          />
+        </>
+      )}
     </>
   );
 };

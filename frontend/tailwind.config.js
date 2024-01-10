@@ -162,6 +162,7 @@ module.exports = {
         3: "0.75rem",
         4: "1rem",
         11: "2.75rem",
+        11.5: "2.875rem",
         13: "3.25rem",
         14: "3.5rem",
         15: "3.75rem",
@@ -177,6 +178,7 @@ module.exports = {
         70: "17.5rem",
         90: "22.5rem",
         94: "23.5rem",
+        100: "25rem",
         125: "31.25rem",
         132.5: "33.125rem",
         142.5: "35.625rem",
@@ -292,5 +294,20 @@ module.exports = {
       ],
     },
   },
+  safelist: [
+    {
+      pattern:
+        /(bg|text|border)-(red|green|blue|gray|primary|secondary|tertiary|success|customSuccess|customError|warning)-(25|50|100|200|300|400|500|600|700|800)/,
+      variants: [
+        "lg",
+        "bg",
+        "text",
+        "peer-checked",
+        "hover",
+        "focus",
+        "lg:hover",
+      ],
+    },
+  ],
   plugins: [],
 };

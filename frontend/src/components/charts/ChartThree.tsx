@@ -1,6 +1,9 @@
 import { ApexOptions } from "apexcharts";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { countUser, reset } from "../../features/report/reportSlice";
 
 interface ChartThreeState {
   series: number[];
@@ -52,8 +55,27 @@ const timeline = ["Monthly", "Quarterly", "Yearly"];
 
 const ChartThree: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
-    series: [65, 34, 12, 56],
+    series: [0, 0, 0, 0],
   });
+  const { data, type, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.report
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(countUser());
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess && data != null) {
+      const { student, staff, individual, organization } = data;
+      setState((prev) => ({
+        prev,
+        series: [student, staff, individual, organization],
+      }));
+    }
+    dispatch(reset());
+  }, [data, isError, isSuccess, message, dispatch]);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-5">
@@ -115,7 +137,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary-500"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Desktop </span>
+              <span> Student </span>
               <span> 65% </span>
             </p>
           </div>
@@ -124,7 +146,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Tablet </span>
+              <span> Staff </span>
               <span> 34% </span>
             </p>
           </div>
@@ -133,7 +155,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Mobile </span>
+              <span> Individual </span>
               <span> 45% </span>
             </p>
           </div>
@@ -142,7 +164,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Unknown </span>
+              <span> Organization </span>
               <span> 12% </span>
             </p>
           </div>

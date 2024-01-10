@@ -37,6 +37,8 @@
     "mysql2": "^3.6.2",
     "nodemailer": "^6.9.7",
     "nodemailer-express-handlebars": "^6.1.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
   }
 }

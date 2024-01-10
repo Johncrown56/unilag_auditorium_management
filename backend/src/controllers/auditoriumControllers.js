@@ -34,6 +34,17 @@ const create = asyncHandler(async (req, res) => {
     throw new Error("Please provide all compulsory fields");
   }
 
+  // check if auditorium already exist
+  const checkAuditorium = await executeQuery(
+    "SELECT `name` FROM `auditorium` WHERE name = ?",
+    [name]
+  );
+  if (checkAuditorium.length > 0) {
+    res
+      .status(400)
+      .json({ success: false, message: "Auditorium already exists" });
+  }
+
   const dateCreated = dateTime();
   const dateUpdated = dateTime();
   const audID = uuidv4();

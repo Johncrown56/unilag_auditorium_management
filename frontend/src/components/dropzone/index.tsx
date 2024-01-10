@@ -1,49 +1,95 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useState,
-  FormEvent,
-} from "react";
-import { useDropzone } from "react-dropzone";
-import { BiUpload } from "react-icons/bi";
+import { useCallback, useEffect, useState } from "react";
+import { FileRejection, useDropzone } from "react-dropzone";
 import { FaTimes } from "react-icons/fa";
 import { HiPhoto } from "react-icons/hi2";
-import { IBoolean, IString } from "../../utils/interfaces";
+import {
+  FileObject,
+  IBooking,
+  IBoolean,
+  IFormState,
+  IString,
+} from "../../utils/interfaces";
 import { toast } from "react-toastify";
+import { formatBytes } from "../../utils/functions";
 
 type IDrop = {
   banner?: string[];
   className: string;
+  id: string;
   touched?: IBoolean;
+  maximumSize?: number;
+  maxFiles?: number;
+  multiple?: boolean;
   formErrors?: IString | any;
-  setImages: (file: any) => void;
+  setImages?: (file: any) => void;
+  setReceipt?: (file: any) => void;
 };
 
-export interface FileObject {
-  name: string;
-  type: string;
-  size: number;
-  data: string;
-}
-
 const Dropzone = (props: IDrop) => {
-  const { className, setImages } = props;
+  const {
+    className,
+    id,
+    multiple,
+    maximumSize,
+    maxFiles,
+    setImages,
+    setReceipt,
+  } = props;
   const [files, setFiles] = useState<any>([]);
+  // const [image, setImage] = useState<any>([]);
   const [rejected, setRejected] = useState<any>([]);
-  const maxSize = 20 * 1024 * 1024; // 20MB
+  const maxSize = maximumSize ? maximumSize : 20 * 1024 * 1024; // 20MB
+  const formattedSize = formatBytes(maxSize);
+
+  const sizeValidator = (file: File) => {
+    const message = `File size is larger than ${formattedSize}`;
+    if (file.size > maxSize) {
+      toast.error(message);
+    }
+    return null;
+  };
+
+  const onDropRejected = (fileRejections: FileRejection[]) => {
+    fileRejections.forEach((file) => {
+      file.errors.forEach((err) => {
+        if (err.code === "file-too-large") {
+          toast.error(
+            `Error: ${err.message}. Please upload maximum of ${formattedSize}`
+          );
+        }
+
+        if (err.code === "file-invalid-type") {
+          toast.error(`Error: ${err.message}.`);
+        }
+
+        if (err.code === "file-too-small") {
+          toast.error(`Error: ${err.message}`);
+        }
+
+        if (err.code === "too-many-files") {
+          toast.error(
+            `Error: ${err.message}. Please upload maximum of ${maxFiles} files`
+          );
+        }
+      });
+    });
+  };
+
+  if (rejected) {
+    //console.log(rejected);
+  }
 
   const onDrop = useCallback(
     async (acceptedFiles: File[], rejectedFiles: Array<any>) => {
       const fileSizeCheck = acceptedFiles.filter(
         (file) => file.size <= maxSize
-      ); // 10MB limit
+      ); //  limit
 
-      if (acceptedFiles.length !== fileSizeCheck.length) {
-        toast.error(
-          "File size exceeds 10MB limit. Please choose smaller files."
-        );
-      }
+      // if (acceptedFiles.length !== fileSizeCheck.length) {
+      //   toast.error(
+      //     `File size exceeds ${formattedSize} limit. Please choose smaller files.`
+      //   );
+      // }
 
       if (acceptedFiles.length) {
         setFiles((previousFiles: any) => [
@@ -73,8 +119,20 @@ const Dropzone = (props: IDrop) => {
           })
         );
 
-        console.log(fileList);
-        setImages((previousFiles: any) => [...previousFiles, ...fileList]);
+        // console.log(fileList);
+        setImages &&
+          setImages((previousFiles: FileObject[]) => [
+            ...previousFiles,
+            ...fileList,
+          ]);
+        setReceipt &&
+          setReceipt((prevState: any) => ({
+            ...prevState,
+            params: {
+              ...prevState.params,
+              [id]: [...prevState?.params?.[id], ...fileList],
+            },
+          }));
       }
 
       if (rejectedFiles?.length) {
@@ -92,6 +150,10 @@ const Dropzone = (props: IDrop) => {
       "image/*": [],
     },
     maxSize,
+    multiple: multiple ? multiple : true,
+    maxFiles: maxFiles ? maxFiles : 1,
+    validator: sizeValidator,
+    onDropRejected: onDropRejected,
     onDrop,
   });
 
@@ -105,13 +167,38 @@ const Dropzone = (props: IDrop) => {
     setFiles((files: FileObject[]) =>
       files.filter((file: FileObject) => file.name !== name)
     );
-    //setImages((files: FileObject[]) => files.filter((file: FileObject) => file.name !== name));
+    setImages &&
+      setImages((files: FileObject[]) =>
+        files.filter((file: FileObject) => file.name !== name)
+      );
+    setReceipt &&
+      setReceipt((prevState: IFormState) => ({
+        ...prevState,
+        params: {
+          ...prevState.params,
+          [id]: filterReceipt(prevState?.params?.receipt, name),
+        },
+      }));
+  };
+
+  const filterReceipt = (data: FileObject[], name: string) => {
+    const filtered = data.filter((file: FileObject) => file.name !== name);
+    console.log(filtered);
+    return filtered;
   };
 
   const removeAll = () => {
     setFiles([]);
     setRejected([]);
-    setImages([]);
+    setImages && setImages([]);
+    setReceipt &&
+      setReceipt((prevState: IFormState) => ({
+        ...prevState,
+        params: {
+          ...prevState.params,
+          [id]: [],
+        },
+      }));
   };
 
   return (
@@ -119,6 +206,7 @@ const Dropzone = (props: IDrop) => {
       <div
         {...getRootProps({
           className: className,
+          id: id,
         })}
       >
         <input {...getInputProps()} />
@@ -139,7 +227,7 @@ const Dropzone = (props: IDrop) => {
             <>
               <p>Drag & drop files here, or click to select files</p>
               <p className="text-xs leading-5 text-gray-600">
-                PNG, JPG, JPEG up to 20MB
+                PNG, JPG, JPEG up to {formattedSize}
               </p>
             </>
           )}

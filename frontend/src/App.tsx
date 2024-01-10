@@ -23,6 +23,8 @@ import Notications from "./pages/notifications";
 import Referrals from "./pages/referrals";
 import TransactionHistory from "./pages/transactions";
 import ViewBookingOne from "./pages/bookings/viewOne";
+import Calendar from "./pages/calendar";
+import EditBooking from "./pages/bookings/edit";
 
 interface PublicRouteProps {
   path: string;
@@ -64,10 +66,12 @@ function App() {
             <Route path="/bookings/view" element={<ViewBookings />} />
             <Route path="bookings/create" element={<BookAuditorium />} />
             <Route path="/bookings/view/:id" element={<ViewBookingOne />} />
+            <Route path="/bookings/edit/:id" element={<EditBooking />} />
             <Route
               path="/transaction-history"
               element={<TransactionHistory />}
             />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notifications" element={<Notications />} />

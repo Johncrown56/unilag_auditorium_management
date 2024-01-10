@@ -1,43 +1,51 @@
-import React, { Fragment, useState } from "react";
+import React, { ChangeEvent, Fragment, useState } from "react";
 import {
   AuditoriumResponse,
   IBooking,
   IBookingBoolean,
+  ICustomSelect,
   IStepFormState,
 } from "../../../utils/interfaces";
 import { NumericFormat } from "react-number-format";
 import { TbCurrencyNaira } from "react-icons/tb";
 import Select from "react-select";
 import moment from "moment";
+import { paymentOptions } from "../../../constants";
 
 interface Props extends IStepFormState {
   params: IBooking;
   touched: IBookingBoolean;
+  handleSelectChange: (value: ICustomSelect) => void;
   auditoriums: AuditoriumResponse[];
   allFeatures: Array<any>;
   eventCategories: Array<any>;
+  onSelectFocus: (name: string) => void;
+  onBlur?: (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => void;
 }
 
 const Step3 = (props: Props) => {
-  const paymentOptions = [
-    {
-      value: "Paystack",
-      label: "Paystack",
-      color: "bg-blue-400",
-    },
-    {
-      value: "Remita",
-      label: "Remita",
-      color: "bg-red-400",
-    },
-  ];
-  const [paymentMethod, setPaymentMethod] = useState(paymentOptions[0]);
-  const handleChange = (option: any) => {
-    setPaymentMethod(option);
-  };
+  const {
+    currentStep,
+    params,
+    allFeatures,
+    touched,
+    formErrors,
+    auditoriums,
+    eventCategories,
+    handleSelectChange,
+    onSelectFocus,
+    onBlur,
+  } = props;
 
-  const { currentStep, params, allFeatures, auditoriums, eventCategories } =
-    props;
+  const { name, type, purpose, remarks, start, end, paymentMethod, features } =
+    params;
+
+  const handleStateChange = (selectedOption: any) => {
+    console.log(selectedOption);
+    handleSelectChange({ value: selectedOption, name: "paymentMethod" });
+  };
 
   const getFeatureNames = (featureIds: any, allFeatures: any) => {
     return featureIds
@@ -48,10 +56,10 @@ const Step3 = (props: Props) => {
       .filter((name: any) => name !== null);
   };
 
-  const newFeatures = getFeatureNames(params.features, allFeatures);
+  const newFeatures = getFeatureNames(features, allFeatures);
 
   const selectedCategory = eventCategories.filter(
-    (c: any) => c.id == Number(params.type)
+    (c: any) => c.id == Number(type)
   )[0];
 
   const values = [
@@ -60,11 +68,11 @@ const Step3 = (props: Props) => {
       value: [
         {
           key: "Auditorium Name",
-          value: params.name.label,
+          value: name?.label,
         },
         {
           key: "Purpose",
-          value: params.purpose,
+          value: purpose,
         },
         {
           key: "Event Category",
@@ -72,7 +80,7 @@ const Step3 = (props: Props) => {
         },
         {
           key: "Remarks",
-          value: params.remarks,
+          value: remarks,
         },
         {
           key: "Features",
@@ -85,14 +93,14 @@ const Step3 = (props: Props) => {
       value: [
         {
           key: "Start Date",
-          value: `${moment(params.start.date).format("DD MMMM YYYY")} ${moment(
-            params.start.time
+          value: `${moment(start?.date).format("DD MMMM YYYY")} ${moment(
+            start?.time
           ).format("HH:mm:ss")}`,
         },
         {
           key: "End Date",
-          value: `${moment(params.end.date).format("DD MMMM YYYY")} ${moment(
-            params.end.time
+          value: `${moment(end?.date).format("DD MMMM YYYY")} ${moment(
+            end?.time
           ).format("HH:mm:ss")}`,
         },
       ],
@@ -104,12 +112,12 @@ const Step3 = (props: Props) => {
   }
   return (
     <div>
-      <div className="border-b border-stroke pb-4 px-7 dark:border-strokedark">
+      {/* <div className="border-b border-stroke pb-4 px-7 dark:border-strokedark">
         <h3 className="font-medium text-center text-black dark:text-white">
           Review Booking
         </h3>
-      </div>
-      <div className="py-7">
+      </div> */}
+      <div className="py-0">
         {values.map((item: any, i: number) => (
           <div key={i} className="mb-3">
             <div className="mb-2">
@@ -143,7 +151,7 @@ const Step3 = (props: Props) => {
         <div className="mb-3">
           <div className="mb-2">
             <span className="text-sm font-semibold dark:text-white">
-              {"Payment Method"}
+              {"Select Payment Method"}
             </span>
           </div>
 
@@ -154,10 +162,12 @@ const Step3 = (props: Props) => {
                 isSearchable={false}
                 className=""
                 value={paymentMethod}
-                id="paymentOption"
-                name="paymentOption"
-                onChange={handleChange}
+                id="paymentMethod"
+                name="paymentMethod"
                 options={paymentOptions}
+                onChange={handleStateChange}
+                onFocus={() => onSelectFocus("paymentMethod")}
+                onBlur={onBlur}
                 formatOptionLabel={(item: any) => (
                   <div className="justify-between items-center flex">
                     <div className="flex gap-2 items-center">
@@ -170,7 +180,7 @@ const Step3 = (props: Props) => {
                           </span>
                         </div>
                       )}
-                      <span className="dark:text-white">{item.label}</span>
+                      <span className="dark:text-dark">{item.label}</span>
                     </div>
                     <span className="text-sm font-semibold dark:text-white">
                       {/* {item.amount} */}
@@ -178,6 +188,9 @@ const Step3 = (props: Props) => {
                   </div>
                 )}
               />
+              <small className="form-error">
+                {touched.paymentMethod && formErrors.paymentMethod}
+              </small>
             </div>
           </div>
         </div>

@@ -21,6 +21,7 @@ interface Props extends IStepFormState {
 type Iparams = {
   start: IEventDate;
   end?: IEventDate;
+  available: boolean;
 };
 
 const Step2 = (props: Props) => {
@@ -33,7 +34,12 @@ const Step2 = (props: Props) => {
     handleDateChange,
     onDateFocus,
   } = props;
-  const { start, end } = params;
+  const { start, end, available } = params;
+  const minTime = new Date();
+  minTime.setHours(7, 0, 0); // Set minimum time to 7:00 AM
+
+  const maxTime = new Date();
+  maxTime.setHours(18, 0, 0); // Set maximum time to 6:00 PM
 
   if (currentStep !== 2) {
     return null;
@@ -69,7 +75,7 @@ const Step2 = (props: Props) => {
               autoComplete="new-password"
             />
             <small className="form-error">
-              {touched.start?.date && formErrors.start?.date}
+              {touched?.start?.date && formErrors?.start?.date}
             </small>
           </div>
         </div>
@@ -90,11 +96,13 @@ const Step2 = (props: Props) => {
               timeIntervals={30}
               timeCaption="Time"
               dateFormat="h:mm aa"
+              minTime={minTime}
+              maxTime={maxTime}
               onFocus={(e) => onDateFocus({ e, name: "start", type: "time" })}
               autoComplete="new-password"
             />
             <small className="form-error">
-              {touched.start?.time && formErrors.start?.time}
+              {touched?.start?.time && formErrors?.start?.time}
             </small>
           </div>
         </div>
@@ -128,8 +136,13 @@ const Step2 = (props: Props) => {
               autoComplete="chrome-off"
             />
             <small className="form-error">
-              {touched.end?.date && formErrors.end?.date}
+              {touched?.end?.date && formErrors?.end?.date}
             </small>
+            <div>
+              <small className="form-error">
+                {touched?.available && formErrors?.available}
+              </small>
+            </div>
           </div>
         </div>
 
@@ -151,6 +164,8 @@ const Step2 = (props: Props) => {
               timeCaption="Time"
               dateFormat="h:mm aa"
               onFocus={(e) => onDateFocus({ e, name: "end", type: "time" })}
+              minTime={minTime}
+              maxTime={maxTime}
               autoComplete="chrome-off"
             />
             <small className="form-error">

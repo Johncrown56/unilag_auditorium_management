@@ -6,7 +6,6 @@ const cors = require("cors");
 const exphbs = require("express-handlebars");
 const path = require("path");
 const fs = require("fs");
-const dns = require("dns");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -31,20 +30,10 @@ app.use("/api/features", require("./src/routes/featureRoutes"));
 app.use("/api/events", require("./src/routes/eventRoutes"));
 app.use("/api/auditoriums", require("./src/routes/auditoriumRoutes"));
 app.use("/api/bookings", require("./src/routes/bookingRoutes"));
+app.use("/api/admin", require("./src/routes/adminRoutes"));
 
 app.use(errorHandler);
 
-const ipAddress = "203.161.52.208";
-
 app.listen(PORT, () => {
-  dns.reverse(ipAddress, (err, hostnames) => {
-    if (err) {
-      console.error(err.message);
-    } else {
-      console.log(
-        `Domain names associated with ${ipAddress}: ${hostnames.join(", ")}`
-      );
-    }
-  });
   console.log(`Server running on port ${PORT}`);
 });

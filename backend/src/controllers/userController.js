@@ -98,30 +98,22 @@ const registerUser = asyncHandler(async (req, res) => {
     if (user) {
       const fetch = "SELECT * FROM users WHERE email = ? ";
       const data = await executeQuery(fetch, [email]);
-      const {
-        id,
-        userId,
-        firstName,
-        lastName,
-        email,
-        phone,
-        role,
-        userCategory,
-        userCategoryId,
-      } = data[0];
-      const profile = {
-        id,
-        userId,
-        firstName,
-        lastName,
-        email,
-        phone,
-        role,
-        userCategory,
-        userCategoryId,
-        token: generateToken(userId),
-      };
-
+      const user = (({ password, dateCreated, dateUpdated, ...rest }) => rest)(
+        data[0]
+      );
+      const token = generateToken(res, userId);
+      // const {
+      //   id,
+      //   userId,
+      //   firstName,
+      //   lastName,
+      //   email,
+      //   phone,
+      //   role,
+      //   userCategory,
+      //   userCategoryId,
+      // } = data[0];
+      const profile = { ...user, token };
       const props = {
         emailSubject: "Welcome to U-IAMS",
         sendTo: email,
@@ -183,26 +175,10 @@ const loginUser = asyncHandler(async (req, res) => {
       // check password and validate it
       const comparePassword = await bcrypt.compare(password, user.password);
       if (user && comparePassword) {
-        const {
-          userId,
-          firstName,
-          lastName,
-          email,
-          phone,
-          role,
-          userCategory,
-          userCategoryId,
-        } = user;
-        const profile = {
-          firstName,
-          lastName,
-          email,
-          phone,
-          role,
-          userCategory,
-          userCategoryId,
-          token: generateToken(userId),
-        };
+        const data = (({ password, dateCreated, dateUpdated, ...rest }) =>
+          rest)(user);
+        const token = generateToken(res, user.userId);
+        const profile = { ...data, token };
         res.status(200).json({
           success: true,
           message: "User login successfully",
@@ -309,6 +285,10 @@ const updateUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
   const addToken = revokedTokens.push(req.token);
   if (addToken) {
+    res.cookie("jwt", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
     res.status(204).json({
       success: true,
       message: "User logout successfully",

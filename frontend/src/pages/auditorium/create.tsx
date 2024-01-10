@@ -22,14 +22,10 @@ import { BiEdit } from "react-icons/bi";
 import { TbCurrencyNaira } from "react-icons/tb";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
-import axios from "axios";
-import { get } from "../../utils/storage";
-import AuthConstants from "../../config/authconstant";
 import ButtonLoader from "../../components/buttonLoader";
 import api, { useNavigateAndClearToken } from "../../utils/http";
 import Dropzone from "../../components/dropzone";
 import { BsPercent } from "react-icons/bs";
-import { FaMoneyBillWave } from "react-icons/fa6";
 
 type Props = {};
 
@@ -86,6 +82,11 @@ const CreateAuditorium = (props: Props) => {
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const onCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: checked }));
   };
 
   const onFocus = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -362,7 +363,7 @@ const CreateAuditorium = (props: Props) => {
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-4">
-                        <TbCurrencyNaira />
+                        <BsPercent />
                       </span>
                       <input
                         className="inputClass"
@@ -423,10 +424,13 @@ const CreateAuditorium = (props: Props) => {
                 <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                   <div className="w-full">
                     <div className="relative">
-                      <label className="inputLabelClass" htmlFor="title">
+                      <label className="inputLabelClass" htmlFor="images">
                         Event Banner
                       </label>
                       <Dropzone
+                        maxFiles={30}
+                        id={"images"}
+                        multiple={true}
                         setImages={setImages}
                         touched={touched}
                         className="dropzoneClass"
@@ -452,7 +456,7 @@ const CreateAuditorium = (props: Props) => {
                         id="active"
                         name="active"
                         className="sr-only"
-                        onChange={onChange}
+                        onChange={onCheckBoxChange}
                         checked={active}
                       />
                       <div className="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
@@ -534,10 +538,10 @@ const CreateAuditorium = (props: Props) => {
                       Edit your photo
                     </span>
                     <span className="flex gap-2.5">
-                      <button className="text-sm hover:text-primary">
+                      <button className="text-sm hover:text-primary-500">
                         Delete
                       </button>
-                      <button className="text-sm hover:text-primary">
+                      <button className="text-sm hover:text-primary-500">
                         Update
                       </button>
                     </span>
@@ -583,7 +587,7 @@ const CreateAuditorium = (props: Props) => {
                       </svg>
                     </span>
                     <p>
-                      <span className="text-primary">Click to upload</span> or
+                      <span className="text-primary-500">Click to upload</span> or
                       drag and drop
                     </p>
                     <p className="mt-1.5">SVG, PNG, JPG or GIF</p>

@@ -64,7 +64,7 @@ const SuccessModal = (props: Props) => {
                       className="h-12 w-12 text-success-500"
                     >
                       <path
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         stroke-linejoin="round"
                         d="M4.5 12.75l6 6 9-13.5"
                       ></path>
