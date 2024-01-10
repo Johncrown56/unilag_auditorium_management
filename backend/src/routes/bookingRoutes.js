@@ -7,6 +7,7 @@ const {
   fetchOne,
   update,
   checkAvailability,
+  changeStatus,
 } = require("../controllers/bookingControllers");
 
 const multer = require("multer");
@@ -20,5 +21,6 @@ const upload = multer({
 router.route("/").post(protect, upload.none(), create).get(protect, fetch);
 router.route("/:id").get(protect, fetchOne).put(protect, update);
 router.route("/check").post(protect, checkAvailability);
+router.route("/status").post(protect, changeStatus);
 
 module.exports = router;

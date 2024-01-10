@@ -10,8 +10,8 @@ const create = async (data: IBooking) => {
 };
 
 // update auditorium
-const update = async (data: IBooking) => {
-  const response = await api.put(baseUrl, data);
+const update = async (id: string, data: IBooking) => {
+  const response = await api.put(baseUrl + "/" + id, data);
   return response.data;
 };
 
@@ -33,12 +33,19 @@ const fetchByUser = async () => {
   return response.data;
 };
 
+// change booking status
+const changeStatus = async (id: string, data: IBooking) => {
+  const response = await api.post(baseUrl + "/" + id, data);
+  return response.data;
+};
+
 const bookingService = {
   create,
   fetch,
   update,
   fetchOne,
   fetchByUser,
+  changeStatus,
 };
 
 export default bookingService;

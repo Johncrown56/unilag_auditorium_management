@@ -113,6 +113,7 @@ export interface AuditoriumResponse {
 }
 
 export interface IBooking {
+  id?: string;
   name: IReactSelect;
   audId?: string;
   purpose: string;

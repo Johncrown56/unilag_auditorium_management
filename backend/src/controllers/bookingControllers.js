@@ -362,12 +362,10 @@ const update = asyncHandler(async (req, res) => {
           data: result,
         });
       } else {
-        res
-          .status(400)
-          .json({
-            success: false,
-            message: "Error: Booking can not be updated",
-          });
+        res.status(400).json({
+          success: false,
+          message: "Error: Booking can not be updated",
+        });
       }
     } else {
       res.status(404).json({ error: "Booking ID does not exist" });
@@ -524,7 +522,7 @@ const checkAvailability = asyncHandler(async (req, res) => {
   }
 });
 
-const process = asyncHandler(async (req, res) => {
+const changeStatus = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
   const bookingId = req.params.id;
   const { status } = req.body;
@@ -553,12 +551,10 @@ const process = asyncHandler(async (req, res) => {
           data: result,
         });
       } else {
-        res
-          .status(400)
-          .json({
-            success: false,
-            message: "Error: Booking can not be updated",
-          });
+        res.status(400).json({
+          success: false,
+          message: "Error: Booking can not be updated",
+        });
       }
     } else {
       res.status(404).json({ error: "Booking ID does not exist" });
@@ -576,4 +572,5 @@ module.exports = {
   update,
   fetchOne,
   checkAvailability,
+  changeStatus,
 };

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IBooking, IRequest } from "../../utils/interfaces";
 import bookingService from "./bookingService";
+import { GetThunkAPI } from "@reduxjs/toolkit/dist/createAsyncThunk";
 
 const initialState: IRequest = {
   isError: false,
@@ -50,7 +51,7 @@ export const update = createAsyncThunk(
   "booking/update",
   async (data: IBooking, thunkAPI) => {
     try {
-      const res = await bookingService.update(data);
+      const res = await bookingService.update(data.id!, data);
       return res;
     } catch (error: any) {
       const message =
