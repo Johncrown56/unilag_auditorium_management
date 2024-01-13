@@ -255,7 +255,7 @@ const ViewBookings = (props: Props) => {
                             <p
                               className={`${
                                 b.paymentStatus == 1
-                                  ? "bg-success-600 text-success"
+                                  ? "bg-success-600 text-success-500"
                                   : "bg-danger-600 text-danger-600"
                               } inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium`}
                             >

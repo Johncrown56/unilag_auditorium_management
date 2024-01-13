@@ -3,7 +3,10 @@ import * as yup from "yup";
 export const step1ValidationSchema = yup.object({
   name: yup
     .object({
-      value: yup.string(),
+      value: yup
+        .string()
+        .min(2, "Remarks can not be less than 2 characters")
+        .max(50, "Remarks can not be more than 50 characters"),
       label: yup.string(),
     })
     .required("Please select auditorium"),
@@ -35,15 +38,10 @@ export const step2ValidationSchema = yup.object({
         "is-after-start",
         "End date must be after start date",
         function (end: any, context) {
-          console.log(end);
-          console.log(this.parent);
-          console.log(context);
           const { start } = this.parent; // Access the value of start date
-          console.log(start);
           if (!start || !end) {
             return true; // If either is not available, skip validation
           }
-          console.log(new Date(end) >= new Date(start));
           return new Date(end) >= new Date(start);
         }
       ),
@@ -61,7 +59,6 @@ export const step3ValidationSchema = yup.object({
       label: yup.string(),
     })
     .required("Please select payment method"),
-  //yup.string().required("Please select payment method"),
 });
 
 export const step4ValidationSchema = yup.object().shape({

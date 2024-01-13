@@ -188,8 +188,7 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(400).json({ success: false, message: "Invalid Password" });
       }
     } else {
-      res.status(400);
-      throw new Error("User not found");
+      res.status(400).json({ success: false, message: "User not found" });
     }
   } catch (error) {
     console.log(error);

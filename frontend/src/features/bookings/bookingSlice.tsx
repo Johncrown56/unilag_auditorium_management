@@ -101,6 +101,24 @@ export const fetchByUser = createAsyncThunk(
   }
 );
 
+// change booking
+export const changeStatus = createAsyncThunk(
+  "booking/status",
+  async (data: IBooking, thunkAPI) => {
+    try {
+      const res = await bookingService.changeStatus(data.id!, data);
+      return res;
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 export const bookingSlice = createSlice({
   name: "booking",
   initialState,
@@ -192,6 +210,22 @@ export const bookingSlice = createSlice({
       })
       .addCase(fetchByUser.rejected, (state, action: any) => {
         state.isFullLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.data = null;
+      })
+      .addCase(changeStatus.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(changeStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = action.payload.success || true;
+        state.message = action.payload.message;
+        state.data = action.payload.data;
+        state.type = action.type;
+      })
+      .addCase(changeStatus.rejected, (state, action: any) => {
+        state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
         state.data = null;
