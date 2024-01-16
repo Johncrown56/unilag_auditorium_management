@@ -15,6 +15,7 @@ import {
   IFormState,
   IPaymentDetails,
   IReactSelect,
+  IResponseType,
   IStep,
   IString,
 } from "../../utils/interfaces";
@@ -47,6 +48,8 @@ import {
 } from "../../features/bookings/bookingSlice";
 import Step4 from "./steps/step4";
 import { PaymentSummary } from "../../utils/constant";
+import Modal from "../../components/modals";
+import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
@@ -107,10 +110,17 @@ const BookAuditorium = (props: Props) => {
   const [auditoriums, setAuditoriums] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [modalContent, setModalContent] = useState({
+  const [modalContent, setModalContent] = useState<{
+    title: string;
+    message: JSX.Element;
+    status: boolean;
+    type: IResponseType;
+    data: {};
+  }>({
     title: "",
     message: <span></span>,
     status: false,
+    type: "success",
     data: {},
   });
   const { mount, currentStep, params, formErrors, touched, disabled } =
@@ -118,6 +128,7 @@ const BookAuditorium = (props: Props) => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigateAndClearToken = useNavigateAndClearToken();
+  const navigate = useNavigate();
 
   const {
     data: data1,
@@ -304,7 +315,8 @@ const BookAuditorium = (props: Props) => {
       );
       const title1 = `${message2}`;
       const title = "Congratulations!!!";
-      openModal(title, msg, isSuccess2, data2);
+      const type = "success";
+      openModal(title, msg, isSuccess2, type, data2);
     }
     dispatch(resetBooking());
   }, [data2, isError2, isSuccess2, message2, dispatch]);
@@ -521,14 +533,21 @@ const BookAuditorium = (props: Props) => {
     title: string,
     message: ReactElement,
     status: boolean,
+    type: IResponseType,
     data: any
   ) => {
     setOpen(true);
-    setModalContent({ title, message, status, data });
+    setModalContent({ title, message, status, type, data });
   };
 
   const resetParams = () => {
     setFormState(initialState);
+  };
+
+  const onProceed = () => {
+    setOpen(false);
+    resetParams();
+    navigate("/auditorium/bookings/create");
   };
 
   const onDiscountClick = () => {
@@ -622,12 +641,21 @@ const BookAuditorium = (props: Props) => {
               </div>
             </div>
           </div>
-          <SuccessModal
+          {/* <SuccessModal
             open={open}
             setOpen={setOpen}
             resetParams={resetParams}
             params={params}
             modalContent={modalContent}
+          /> */}
+          <Modal
+            showModal={open}
+            setShowModal={setOpen}
+            title={modalContent.title}
+            type={modalContent.type}
+            body={modalContent.message}
+            onSubmit={onProceed}
+            isLoading={false}
           />
         </>
       )}

@@ -1,7 +1,7 @@
-import { IBooking } from "../../utils/interfaces";
+import { IBooking, IChangeStatus } from "../../utils/interfaces";
 import api from "../../utils/http";
 
-const baseUrl = process.env.REACT_APP_BASEURL + "/api/bookings";
+const baseUrl = "/api/bookings";
 
 // Book auditorium
 const create = async (data: IBooking) => {
@@ -27,15 +27,11 @@ const fetchOne = async (id: string) => {
   return response.data;
 };
 
-// fetch all booked auditorium for each user
-const fetchByUser = async () => {
-  const response = await api.get(baseUrl + "?type=user");
-  return response.data;
-};
-
 // change booking status
-const changeStatus = async (id: string, data: IBooking) => {
-  const response = await api.post(baseUrl + "/" + id, data);
+const changeStatus = async (data: IChangeStatus) => {
+  const response = await api.post(baseUrl + "/status/" + data.id, {
+    status: data.status,
+  });
   return response.data;
 };
 
@@ -44,7 +40,6 @@ const bookingService = {
   fetch,
   update,
   fetchOne,
-  fetchByUser,
   changeStatus,
 };
 

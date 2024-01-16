@@ -7,6 +7,55 @@ import {
 } from "react";
 import qs from "qs";
 import { ID, QueryResponseContextProps, QueryState } from "./models";
+import { toast } from "react-toastify";
+import { logout } from "../features/auth/authslice";
+import { useNavigateAndClearToken } from "./http";
+import { Navigate } from "react-router-dom";
+import { removeItem } from "./storage";
+import AuthConstants from "../config/authconstant";
+
+const location = window.location;
+console.log(location);
+
+export const scrollTop = () => {
+  const element = document.getElementById("top-page");
+  if (element) {
+    const position = getOffset(element);
+    window.scrollTo(position.left, 0);
+  }
+};
+
+export function getOffset(el: any) {
+  const rect = el.getBoundingClientRect();
+  return {
+    left: rect.left + window.scrollX,
+    top: rect.top + window.scrollY,
+  };
+}
+
+export const formatToCurrency = (value: string) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "NGN",
+  }).format(parseFloat(value));
+};
+
+export const checkUser = () => {
+  return !!localStorage.getItem("user");
+};
+
+export const logoutFromHelper = (dispatch: any) => {
+  //localStorage.removeItem("user");
+  //dispatch(logout());
+  // const navigateAndClearToken = useNavigateAndClearToken();
+  //navigate("/login", { replace: true });
+  toast.success("Logout Successfully");
+};
+
+export const logoutOnIdle = () => {
+  removeItem(AuthConstants());
+  <Navigate to="/login" replace state={{ from: location?.pathname }} />;
+};
 
 function createResponseContext<T>(initialState: QueryResponseContextProps<T>) {
   return createContext(initialState);

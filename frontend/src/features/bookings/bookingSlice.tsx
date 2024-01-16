@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IBooking, IRequest } from "../../utils/interfaces";
+import { IBooking, IChangeStatus, IRequest } from "../../utils/interfaces";
 import bookingService from "./bookingService";
 import { GetThunkAPI } from "@reduxjs/toolkit/dist/createAsyncThunk";
 
@@ -83,30 +83,12 @@ export const fetchOne = createAsyncThunk(
   }
 );
 
-// fetch all booking bookings per user
-export const fetchByUser = createAsyncThunk(
-  "booking/fetchByUser",
-  async (_, thunkAPI) => {
-    try {
-      return await bookingService.fetchByUser();
-    } catch (error: any) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
 // change booking
 export const changeStatus = createAsyncThunk(
   "booking/status",
-  async (data: IBooking, thunkAPI) => {
+  async (data: IChangeStatus, thunkAPI) => {
     try {
-      const res = await bookingService.changeStatus(data.id!, data);
+      const res = await bookingService.changeStatus(data);
       return res;
     } catch (error: any) {
       const message =
@@ -193,22 +175,6 @@ export const bookingSlice = createSlice({
         state.type = action.type;
       })
       .addCase(fetchOne.rejected, (state, action: any) => {
-        state.isFullLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-        state.data = null;
-      })
-      .addCase(fetchByUser.pending, (state) => {
-        state.isFullLoading = true;
-      })
-      .addCase(fetchByUser.fulfilled, (state, action) => {
-        state.isFullLoading = false;
-        state.isSuccess = true;
-        state.message = action.payload.message;
-        state.data = action.payload.data;
-        state.type = action.type;
-      })
-      .addCase(fetchByUser.rejected, (state, action: any) => {
         state.isFullLoading = false;
         state.isError = true;
         state.message = action.payload;

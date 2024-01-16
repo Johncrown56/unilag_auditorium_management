@@ -16,7 +16,6 @@ import {
 } from "../../features/auditoriums/auditoriumSlice";
 import {
   fetch as fetchBooking,
-  fetchByUser,
   reset as resetBooking,
 } from "../../features/bookings/bookingSlice";
 import { fetchAll, reset as resetUsers } from "../../features/users/userSlice";
@@ -85,7 +84,7 @@ const Dashboard = (props: Props) => {
       dispatch(fetchBooking());
       dispatch(fetchAll());
     } else {
-      dispatch(fetchByUser());
+      dispatch(fetchBooking());
     }
   }, []);
 

@@ -60,12 +60,16 @@ const DropdownUser = () => {
         className="flex items-center gap-4"
         to="#"
       >
-        <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white">
+        <div className="hidden text-right lg:block">
+          <div className="block text-sm font-medium text-black dark:text-white">
             {`${firstName} ${lastName} `}
-          </span>
-          <span className="block text-xs">{email}</span>
-        </span>
+            <span className="rounded-full bg-primary-600 me-2 px-2.5 py-0.5 rounded-full text-xs font-medium text-white">
+              {role}
+            </span>
+          </div>
+
+          <div className="block text-xs">{email}</div>
+        </div>
 
         <span className="h-12 w-12 rounded-full">
           <img src={avatar} alt="User" className="rounded-full" />

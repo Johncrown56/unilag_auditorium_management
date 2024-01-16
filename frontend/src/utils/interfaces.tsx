@@ -224,3 +224,9 @@ export interface IupdateProfile {
   lastName: string;
   phone: string;
 }
+export type IResponseType = "error" | "success" | "info";
+
+export type IChangeStatus = {
+  id: number;
+  status: string;
+};

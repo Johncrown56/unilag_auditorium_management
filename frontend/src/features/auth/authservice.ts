@@ -1,4 +1,3 @@
-import axios from "axios";
 import { get, removeItem, store } from "../../utils/storage";
 import AuthConstants from "../../config/authconstant";
 import {
@@ -8,12 +7,13 @@ import {
   IResetPassword,
   IVerifyOTP,
 } from "../../utils/interfaces";
+import api from "../../utils/http";
 
-const baseUrl = process.env.REACT_APP_BASEURL;
+const baseUrl = "/api/users";
 
 //register user
 const register = async (data: IRegister) => {
-  const response = await axios.post(baseUrl + "/api/users", data);
+  const response = await api.post(baseUrl, data);
   console.log(response.data);
   if (response.data.success) {
     store(AuthConstants(), response.data.data);
@@ -23,7 +23,7 @@ const register = async (data: IRegister) => {
 
 // Login user
 const login = async (data: ILogin) => {
-  const response = await axios.post(baseUrl + "/api/users/login", data);
+  const response = await api.post(baseUrl + "/login", data);
   if (response.data.success) {
     store(AuthConstants(), response.data.data);
   }
@@ -33,7 +33,7 @@ const login = async (data: ILogin) => {
 // Logout user
 const logout = async () => {
   const user = get(AuthConstants());
-  const response = await axios.get(baseUrl + "/api/users/logout", {
+  const response = await api.get(baseUrl + "/logout", {
     headers: { Authorization: `Bearer ${user.token}` },
   });
   console.log(response.data);
@@ -45,7 +45,7 @@ const logout = async () => {
 
 // customer forgot Password
 const forgotPassword = async (data: IForgotPassword) => {
-  const response = await axios.post(baseUrl + "/user/forgot-password", data);
+  const response = await api.post(baseUrl + "/forgot-password", data);
   if (response.data.success) {
     console.log(response.data.data);
   }
@@ -54,7 +54,7 @@ const forgotPassword = async (data: IForgotPassword) => {
 
 // reset password
 const resetPassword = async (data: IResetPassword) => {
-  const response = await axios.post(baseUrl + "/user/reset-password", data);
+  const response = await api.post(baseUrl + "/reset-password", data);
   if (response.data.success) {
     console.log(response.data.data);
   }
@@ -63,7 +63,7 @@ const resetPassword = async (data: IResetPassword) => {
 
 // verify email or phone
 const verifyEmail = async (data: IVerifyOTP) => {
-  const response = await axios.post(baseUrl + "/customer/otpverify", data);
+  const response = await api.post(baseUrl + "/otpverify", data);
   if (response.data.success) {
     console.log(response.data.data);
   }
