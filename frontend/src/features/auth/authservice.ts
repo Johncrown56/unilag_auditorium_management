@@ -8,8 +8,9 @@ import {
   IVerifyOTP,
 } from "../../utils/interfaces";
 import api from "../../utils/http";
+import endpoint from "../../utils/endpoints";
 
-const baseUrl = "/api/users";
+const baseUrl = endpoint.USERS;
 
 //register user
 const register = async (data: IRegister) => {

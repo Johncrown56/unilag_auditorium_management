@@ -286,8 +286,8 @@ const Datatable = (props: Props) => {
                           {b.name}
                         </th>
                         <td className="px-4 py-3">{b.bookingId}</td>
-                        <td className="px-4 py-3">{b.category.name}</td>
-                        <td className="px-4 py-3">{b.purpose}</td>
+                        <td className="px-4 py-3">{b?.category?.name}</td>
+                        <td className="px-4 py-3">{b?.purpose}</td>
                         <td className="px-4 py-3">
                           {moment(b.dateCreated).format("DD MMM, YYYY. HH:mmA")}
                         </td>

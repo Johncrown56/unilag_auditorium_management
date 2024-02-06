@@ -203,7 +203,7 @@ const Login = (props: Props) => {
             >
               <ButtonLoader
                 isLoading={isLoading}
-                text="Login to your account"
+                text="Login"
                 loadingText="Loading"
               />
             </button>

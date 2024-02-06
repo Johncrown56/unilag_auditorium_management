@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HiChevronDown } from "react-icons/hi";
 import { Switch } from "@headlessui/react";
+import { Link } from "react-router-dom";
 
 const classNames = (...classes: any) => {
   return classes.filter(Boolean).join(" ");
@@ -138,9 +139,9 @@ const Contact = () => {
             </div>
             <Switch.Label className="text-sm leading-6 text-gray-600">
               By selecting this, you agree to our{" "}
-              <a href="#" className="font-semibold text-primary-600">
+              <Link to={`/privacy-policy`} className="font-semibold text-primary-600">
                 privacy&nbsp;policy
-              </a>
+              </Link>
               .
             </Switch.Label>
           </Switch.Group>

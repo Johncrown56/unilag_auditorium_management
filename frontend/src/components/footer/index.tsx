@@ -1,22 +1,24 @@
-import React from "react";
 import logo from "../../assets/imgs/unilag-logo-text.png";
+import logoWhite from "../../assets/imgs/unilag-white-text.png";
 import moment from "moment";
 import { BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import { aboutUsPages, usefulLinkPages } from "../../utils/constant";
 
 type Props = {};
 
 const Footer = (props: Props) => {
   const year = moment().format("YYYY");
   return (
-    <footer className="relative z-10 py-20 bg-white dark:bg-black-dark bg-white dark:bg-black-dark">
+    <footer className="relative z-10 py-20 bg-white dark:bg-black">
       <div className="mx-auto max-w-292.5 px-4 sm:px-8 xl:px-0">
-        <div className="flex flex-wrap gap-10 xl:justify-between">
+        <div className="flex flex-wrap gap-5 xl:justify-between">
           <div className="max-w-100">
-            <div>
-              <a className="mb-7.5 inline-block" href="/">
+            <div className="text-black dark:text-white">
+              <Link className="mb-7.5 inline-block" to={"/"}>
                 <img className="dark:hidden" src={logo} alt="Logo Light" />
-                <img className="hidden dark:block" src={logo} alt="Logo Dark" />
-              </a>
+                <img className="hidden dark:block" src={logoWhite} alt="Logo Dark" />
+              </Link>
               <p>UNILAG Auditorium Management System</p>
               <p className="mt-10 mb-0.5">
                 © {year} University Auditorium Commitee - All Rights Reserved.
@@ -30,7 +32,7 @@ const Footer = (props: Props) => {
                     <a
                       target="_blank"
                       rel="nofollow"
-                      className="hover:text-black"
+                      className="hover:text-black dark:hover:text-white"
                       href="#"
                     >
                       <BiLogoFacebook className="h-5 w-5 fill-current" />
@@ -40,7 +42,7 @@ const Footer = (props: Props) => {
                     <a
                       target="_blank"
                       rel="nofollow"
-                      className="hover:text-black"
+                      className="hover:text-black dark:hover:text-white"
                       href="#"
                     >
                       <BiLogoTwitter className="h-5 w-5 fill-current" />
@@ -50,7 +52,7 @@ const Footer = (props: Props) => {
                     <a
                       target="_blank"
                       rel="nofollow"
-                      className="hover:text-black"
+                      className="hover:text-black dark:hover:text-white"
                       href="#"
                     >
                       <BiLogoInstagram className="h-5 w-5 fill-current" />
@@ -64,75 +66,38 @@ const Footer = (props: Props) => {
           <div className="w-full sm:w-auto">
             <div>
               <h4 className="mb-7.5 text-lg font-medium text-black dark:text-white">
-                Useful Links
+                About
               </h4>
 
               <ul className="flex flex-col gap-3">
-                <li>
-                  <a className="hover:text-primary-500" target="_blank" href="">
-                    Documentation
-                  </a>
+                {aboutUsPages.map((p, i) => (
+                  <li key={i}>
+                  <Link className="text-black hover:text-primary-500 dark:text-white dark:hover:text-primary-500" to={p.link}>
+                    {p.name}
+                  </Link>
                 </li>
-                <li>
-                  <a className="hover:text-primary-500" href="">
-                    Download Pro Update
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary-500" href="download">
-                    Download
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary-500" href="">
-                    Update Logs
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary-500" href="">
-                    License
-                  </a>
-                </li>
+                ))}
               </ul>
             </div>
           </div>
           <div className="w-full sm:w-auto">
             <div>
               <h4 className="mb-7.5 text-lg font-medium text-black dark:text-white">
-                About
+                Useful Links
               </h4>
 
               <ul className="flex flex-col gap-3">
-                <li>
-                  <a
-                    className="hover:text-primary-500"
+              {usefulLinkPages.map((p, i) => (
+                <li key={i}>
+                  <Link
+                    className="text-black hover:text-primary-500 dark:text-white dark:hover:text-primary-500"
                     rel="nofollow noopener"
-                    target="_blank"
-                    href=""
+                    to={p.link}
                   >
-                    Privacy Policy
-                  </a>
+                    {p.name}
+                  </Link>
                 </li>
-                <li>
-                  <a
-                    className="hover:text-primary-500"
-                    rel="nofollow noopener"
-                    target="_blank"
-                    href=""
-                  >
-                    Refund Policy
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary-500" href="">
-                    FAQ
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary-500" href="/contact-us">
-                    Support
-                  </a>
-                </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -141,7 +106,7 @@ const Footer = (props: Props) => {
               <h4 className="mb-7.5 text-lg font-medium text-black dark:text-white">
                 Subscribe
               </h4>
-              <p>Subscribe to our newsletter for the latest updates</p>
+              <p className="text-black dark:text-white">Subscribe to our newsletter for the latest updates</p>
 
               <form
                 className="mt-6"
@@ -156,7 +121,7 @@ const Footer = (props: Props) => {
                       name="email"
                       id="footeremail"
                       placeholder="Enter your email"
-                      className="bg-gray-50 w-full rounded-md border border-stroke py-2.5 px-5 text-black-4 outline-none focus:border-primary-500 dark:border-form-stroke-dark dark:bg-form-input dark:focus:border-primary-500 bg-gray-50"
+                      className="bg-gray-50 w-full rounded-md border border-stroke py-2.5 px-5 text-black outline-none focus:border-primary-500 dark:text-white dark:border-form-stroke-dark dark:bg-form-input dark:focus:border-primary-500"
                     />
                   </div>
                   <button

@@ -3,7 +3,7 @@ import Logo from "../../assets/imgs/unilag-logo-text.png";
 import DropdownMessage from "../dropdownMessage";
 import DropdownNotification from "../dropdownNotification";
 import DropdownUser from "../dropdownUser";
-import DarkModeSwitch from "../darkModeSwitch";
+import PrivateDarkModeSwitch from "../darkModeSwitch/private";
 
 const Topbar = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -100,7 +100,7 @@ const Topbar = (props: {
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Toggler --> */}
-            <DarkModeSwitch />
+            <PrivateDarkModeSwitch />
             {/* <!-- Dark Mode Toggler --> */}
 
             {/* <!-- Notification Menu Area --> */}

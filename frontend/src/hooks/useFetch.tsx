@@ -3,15 +3,13 @@ import { fetchDataFromApi } from "../utils/http";
 
 const useFetch = (url: string) => {
   const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [success, setSuccess] = useState<boolean>(false);
 
   const fetchData = () => {
     setLoading(true);
     setData(null);
-    setError("");
     setMessage("");
     setSuccess(false);
 
@@ -27,9 +25,8 @@ const useFetch = (url: string) => {
       .catch((err: any) => {
         console.log(err);
         setLoading(false);
-        setMessage(err?.message);
+        setMessage(err?.message || "Something went wrong!");
         setSuccess(false);
-        setError("Something went wrong!");
       });
   };
 
@@ -37,7 +34,7 @@ const useFetch = (url: string) => {
     fetchData();
   }, [url]);
 
-  return { data, loading, error, message, success, fetchData };
+  return { data, loading, message, success, fetchData };
 };
 
 export default useFetch;

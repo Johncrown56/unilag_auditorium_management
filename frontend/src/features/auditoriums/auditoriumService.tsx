@@ -1,7 +1,8 @@
 import { IAuditorium } from "../../utils/interfaces";
 import api from "../../utils/http";
+import endpoint from "../../utils/endpoints";
 
-const baseUrl = process.env.REACT_APP_BASEURL + "/api/auditoriums";
+const baseUrl = process.env.REACT_APP_BASEURL + endpoint.AUDITORIUMS;
 
 // Create auditorium
 const create = async (data: IAuditorium) => {

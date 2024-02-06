@@ -1,6 +1,7 @@
+import endpoint from "../../utils/endpoints";
 import api from "../../utils/http";
 
-const url = "/api/users/profile";
+const url = `${endpoint.USERS}/profile`;
 
 // get user profile
 const fetch = async () => {

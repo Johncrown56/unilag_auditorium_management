@@ -22,7 +22,7 @@ import PublicRoute from "./components/publicRoute";
 import ContactUs from "./pages/contact-us";
 import CreateAuditorium from "./pages/auditorium/create";
 import ViewAuditorium from "./pages/auditorium/view";
-import FrontAuditorium from "./pages/front/auditoriums";
+import FrontAuditorium from "./pages/front/auditoriums/view-one";
 import BookAuditorium from "./pages/bookings/book";
 import ViewBookings from "./pages/bookings/view";
 import Settings from "./pages/settings";
@@ -41,6 +41,10 @@ import { AppDispatch } from "./store/store";
 import { useNavigateAndClearToken } from "./utils/http";
 import { removeItem } from "./utils/storage";
 import AuthConstants from "./config/authconstant";
+import FrontAuditoriumViewOne from "./pages/front/auditoriums/view-one";
+import FrontAuditoriumView from "./pages/front/auditoriums/view";
+import Faq from "./pages/faq";
+import EventGallery from "./pages/event-gallery";
 
 interface PublicRouteProps {
   path: string;
@@ -86,9 +90,15 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/event-gallery" element={<EventGallery />} />
+              <Route
+                path="/auditoriums"
+                element={<FrontAuditoriumView />}
+              />
               <Route
                 path="/auditorium/details/:id"
-                element={<FrontAuditorium />}
+                element={<FrontAuditoriumViewOne />}
               />
               <Route path="*" element={<PageNotFound />} />
             </Route>

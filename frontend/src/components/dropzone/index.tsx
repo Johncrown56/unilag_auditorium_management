@@ -21,6 +21,7 @@ type IDrop = {
   maxFiles?: number;
   multiple?: boolean;
   formErrors?: IString | any;
+  images?: Array<any>;
   setImages?: (file: any) => void;
   setReceipt?: (file: any) => void;
 };
@@ -32,6 +33,7 @@ const Dropzone = (props: IDrop) => {
     multiple,
     maximumSize,
     maxFiles,
+    images,
     setImages,
     setReceipt,
   } = props;
@@ -77,7 +79,7 @@ const Dropzone = (props: IDrop) => {
 
   if (rejected) {
     //console.log(rejected);
-  }
+  }  
 
   const onDrop = useCallback(
     async (acceptedFiles: File[], rejectedFiles: Array<any>) => {
@@ -200,6 +202,11 @@ const Dropzone = (props: IDrop) => {
         },
       }));
   };
+
+  // if(images?.length === 0){
+  //   setFiles([]);
+  //   setRejected([]);
+  // }
 
   return (
     <>

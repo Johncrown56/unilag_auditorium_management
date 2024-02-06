@@ -50,6 +50,7 @@ import Step4 from "./steps/step4";
 import { PaymentSummary } from "../../utils/constant";
 import Modal from "../../components/modals";
 import { useNavigate } from "react-router-dom";
+import endpoint from "../../utils/endpoints";
 
 type Props = {};
 
@@ -181,7 +182,7 @@ const BookAuditorium = (props: Props) => {
 
   // show payment summary
   const prices = PaymentSummary(selectedAuditorium, differenceInDays, price);
-  const totalAmount = calculateTotalAmount(prices);
+  const totalAmount = calculateTotalAmount(prices);  
   //totalAmount && setTotalPrice(totalAmount);
 
   useEffect(() => {
@@ -323,7 +324,7 @@ const BookAuditorium = (props: Props) => {
 
   const fetchCategories = async () => {
     try {
-      const url = "/api/events";
+      const url = endpoint.EVENTS;
       const response = await api.get(url);
       console.log(response.data);
       setCategories(response.data.data);

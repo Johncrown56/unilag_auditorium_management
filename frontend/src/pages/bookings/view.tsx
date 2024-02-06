@@ -47,24 +47,24 @@ const ViewBookings = () => {
     data: data2,
     loading,
     message: message2,
-    error,
     success,
     fetchData,
-  } = useFetch("/api/bookings");
+  } = useFetch(endpoint.BOOKING);
 
   // useEffect(() => {
   //   dispatch(fetch());
   // }, []);
 
   useEffect(() => {
-    if (error) {
+    if (!success) {
+      console.log({success})
       toast.error(message2);
     }
     if (success && data2 != null) {
       console.log(data2);
       setBookings(data2.data);
     }
-  }, [data2, loading, error, success, message2]);
+  }, [data2, loading, success, message2]);
 
   useEffect(() => {
     if (isError) {

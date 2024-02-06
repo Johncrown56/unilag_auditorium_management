@@ -1,7 +1,8 @@
 import { IBooking, IChangeStatus } from "../../utils/interfaces";
 import api from "../../utils/http";
+import endpoint from "../../utils/endpoints";
 
-const baseUrl = "/api/bookings";
+const baseUrl = endpoint.BOOKING;
 
 // Book auditorium
 const create = async (data: IBooking) => {

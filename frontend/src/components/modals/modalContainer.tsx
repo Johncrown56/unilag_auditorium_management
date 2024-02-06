@@ -31,7 +31,7 @@ const ModalContainer = (props: Props) => {
     <div
       // onClick={() => setShowModal(false)}
       className={`${
-        showModal ? "visible bg-black/20" : "invisible"
+        showModal ? "visible bg-black/20 z-999999" : "invisible"
       } transition-colors flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none`}
     >
       <div className="relative z-30">

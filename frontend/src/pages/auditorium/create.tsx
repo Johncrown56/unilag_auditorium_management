@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   FormEvent,
   FormEventHandler,
@@ -26,6 +26,8 @@ import ButtonLoader from "../../components/buttonLoader";
 import api, { useNavigateAndClearToken } from "../../utils/http";
 import Dropzone from "../../components/dropzone";
 import { BsPercent } from "react-icons/bs";
+import makeAnimated from 'react-select/animated';
+import endpoint from "../../utils/endpoints";
 
 type Props = {};
 
@@ -74,6 +76,7 @@ const CreateAuditorium = (props: Props) => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigateAndClearToken = useNavigateAndClearToken();
+  const animatedComponents = makeAnimated();
 
   const { data, isLoading, isError, isSuccess, message } = useSelector(
     (state: any) => state.auditorium
@@ -99,7 +102,6 @@ const CreateAuditorium = (props: Props) => {
     value: IReactSelect[] | any;
   }) => {
     const { name, value } = props;
-    console.log(value);
     const newValues = value.map((option: any) => option.value);
     setFormData((prevState) => ({ ...prevState, [name]: newValues }));
   };
@@ -108,8 +110,6 @@ const CreateAuditorium = (props: Props) => {
     e: FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-    console.log(formData);
-    console.log(images);
     const allimages = {
       images: images,
     };
@@ -120,6 +120,7 @@ const CreateAuditorium = (props: Props) => {
 
   const onReset = () => {
     setFormData(initialValue);
+    setImages([])
   };
 
   useEffect(() => {
@@ -130,8 +131,9 @@ const CreateAuditorium = (props: Props) => {
       // if response is Success
       toast.success(message);
       console.log(data);
-      // reset all values
-      setFormData(initialValue);
+      // reset all values and images
+      onReset();
+      clearSelectedValues();
     }
     dispatch(reset());
   }, [data, isError, isSuccess, message, dispatch]);
@@ -142,11 +144,10 @@ const CreateAuditorium = (props: Props) => {
 
   const fetchFeatures = async () => {
     try {
-      const url = "/api/features";
+      const url = endpoint.FEATURES;
       const response = await api.get(url);
       setAllFeatures(response.data.data);
     } catch (error: any) {
-      console.log(error);
       if (
         error.response &&
         error.response.status === 401 &&
@@ -165,6 +166,10 @@ const CreateAuditorium = (props: Props) => {
     value: f.id,
     label: f.name,
   }));
+
+  const clearSelectedValues = () => {
+    setFormData((prevState) => ({ ...prevState, features: [] }));
+  }
 
   return (
     <div className="mx-auto max-w-270">
@@ -388,6 +393,7 @@ const CreateAuditorium = (props: Props) => {
                   <Select
                     isMulti
                     name="features"
+                    components={animatedComponents}
                     options={allFeatures1}
                     className="basic-multi-select text-sm"
                     classNamePrefix="react-select"
@@ -432,6 +438,7 @@ const CreateAuditorium = (props: Props) => {
                         id={"images"}
                         multiple={true}
                         setImages={setImages}
+                        images={images}
                         touched={touched}
                         className="dropzoneClass"
                       />
@@ -505,13 +512,13 @@ const CreateAuditorium = (props: Props) => {
 
                 <div className="flex justify-end gap-4.5">
                   <button
-                    className="resetButton"
+                    className="resetButton" 
                     type="button"
                     onClick={onReset}
                   >
                     Reset
                   </button>
-                  <button className="protectedSubmitButton" type="submit">
+                  <button className={`${isLoading ? "disabled" : ""} protectedSubmitButton`} type="submit" disabled={isLoading}>
                     <ButtonLoader
                       isLoading={isLoading}
                       text="Submit"

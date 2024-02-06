@@ -7,6 +7,7 @@ import { countUser, reset } from "../../features/report/reportSlice";
 
 interface ChartThreeState {
   series: number[];
+  total: number;
 }
 
 const options: ApexOptions = {
@@ -56,6 +57,7 @@ const timeline = ["Monthly", "Quarterly", "Yearly"];
 const ChartThree: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
     series: [0, 0, 0, 0],
+    total: 0,
   });
   const { data, type, isLoading, isError, isSuccess, message } = useSelector(
     (state: any) => state.report
@@ -68,10 +70,15 @@ const ChartThree: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess && data != null) {
-      const { student, staff, individual, organization } = data;
+      console.log(data);
+      const { student, staff, individual, organization } = data as Record<string, number>;
+      const series = [student, staff, individual, organization];
+      const total = series.reduce((acc, curr) => acc + curr, 0);
+      //const sum: number = Object.values(data).reduce((acc, curr) => acc + curr, 0); // 
       setState((prev) => ({
         prev,
-        series: [student, staff, individual, organization],
+        series,
+        total
       }));
     }
     dispatch(reset());
@@ -138,7 +145,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary-500"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Student </span>
-              <span> 65% </span>
+              <span> {state.series[0]/ state.total * 100}% </span>
             </p>
           </div>
         </div>
@@ -147,7 +154,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Staff </span>
-              <span> 34% </span>
+              <span> {state.series[1]/ state.total * 100}% </span>
             </p>
           </div>
         </div>
@@ -156,7 +163,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Individual </span>
-              <span> 45% </span>
+              <span> {state.series[2]/ state.total * 100}% </span>
             </p>
           </div>
         </div>
@@ -165,7 +172,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Organization </span>
-              <span> 12% </span>
+              <span> {state.series[3]/ state.total * 100}% </span>
             </p>
           </div>
         </div>

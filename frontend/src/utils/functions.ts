@@ -62,3 +62,18 @@ export const calculateTotalAmount = (prices: any) => {
   );
   return price;
 };
+
+// Create an array of the last 12 months
+export const last12Months = Array.from({ length: 12 }, (_, index) =>
+  moment().clone().subtract(index, 'months').format('MMM YYYY')
+).reverse();
+
+// Create an array of the last 30 days
+export const last30Days = Array.from({ length: 30 }, (_, index) =>
+moment().clone().subtract(index, 'days').format('DD-MM')
+).reverse();
+
+// Create an array of the last 7 days
+export const last7Days = Array.from({ length: 7 }, (_, index) =>
+moment().clone().subtract(index, 'days').format('DD-MM') 
+).reverse();

@@ -29,6 +29,7 @@ export const fetchDataFromApi = async (url: string, params?: any) => {
     const { data } = await api.get(url, {
       params,
     });
+    console.log(data)
     return data;
   } catch (err) {
     console.log(err);

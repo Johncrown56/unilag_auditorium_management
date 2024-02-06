@@ -1,8 +1,10 @@
 import moment from "moment";
 import { NumericFormat } from "react-number-format";
+import useFetch from "../../hooks/useFetch";
+import endpoint from "../../utils/endpoints";
 
 type Props = {
-  data: Iparams[];
+  //data: Iparams[];
 };
 
 type Iparams = {
@@ -12,9 +14,12 @@ type Iparams = {
 };
 
 const TableThree = (props: Props) => {
-  const { data } = props;
+  const { data, loading, message, success} = useFetch(endpoint.BOOKING);
+  const bookings = Array.isArray(data?.data) && data?.data;
+  console.log(bookings)
   return (
     <>
+      {!loading && data && (
       <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-7">
         <h4 className="mb-2 text-xl font-semibold text-black dark:text-white">
           Last 5 Bookings
@@ -40,10 +45,10 @@ const TableThree = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {data
-                  .slice(-5)
-                  .reverse()
-                  .map((d, i) => (
+                {bookings
+                  ?.slice(-5)
+                  ?.reverse()
+                  ?.map((d: any, i: number) => (
                     <tr key={i}>
                       <td className="border-b border-[#eee] py-3 px-2 pl-9 dark:border-strokedark xl:pl-11">
                         <h5 className="font-medium text-black dark:text-white">
@@ -150,6 +155,7 @@ const TableThree = (props: Props) => {
           </div>
         </div>
       </div>
+      )}
     </>
   );
 };

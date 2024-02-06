@@ -28,7 +28,9 @@ export const register = createAsyncThunk(
   async (values: IRegister, thunkAPI) => {
     console.log(values);
     try {
-      return await authService.register(values);
+      const res = await authService.register(values);
+      console.log(res);
+      return res
     } catch (error: any) {
       const message =
         (error.response &&

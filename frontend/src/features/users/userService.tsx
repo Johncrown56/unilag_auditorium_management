@@ -1,7 +1,8 @@
+import endpoint from "../../utils/endpoints";
 import api from "../../utils/http";
 import { IupdateProfile } from "../../utils/interfaces";
 
-const baseUrl = "/api/users";
+const baseUrl = endpoint.USERS;
 
 // get all users
 const fetchAll = async () => {

@@ -101,7 +101,7 @@ export const menus: IMenu[] = [
     ],
   },
   {
-    name: "Admino",
+    name: "Admin",
     section: [
       {
         name: "Auditorium",
