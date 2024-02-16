@@ -10,6 +10,7 @@ import {
   IStepFormState,
 } from "../../../utils/interfaces";
 import Select from "react-select";
+//import { OptionsType } from "react-select";
 
 interface Props extends IStepFormState {
   params: Iparams;
@@ -39,6 +40,9 @@ type Iparams = {
   type: number;
 };
 
+// Define the type for the options array
+type OptionType = { value: string; label: string };
+
 const Step1 = (props: Props) => {
   const {
     currentStep,
@@ -59,22 +63,22 @@ const Step1 = (props: Props) => {
   } = props;
   const { purpose, remarks, type, name } = params;
 
-  const auditoriumOptions = auditoriums.map((item: any) => ({
-    value: item.audID,
-    label: item.name,
+  const auditoriumOptions = auditoriums && auditoriums.map((item: any) => ({
+    value: item?.audID as string,
+    label: item?.name as string,
   }));
 
   const featureOptions = allFeatures.map((item: any) => ({
-    value: item.featureID,
-    label: item.name,
+    value: item?.featureID,
+    label: item?.name,
   }));
 
   const handleStateChange = (selectedOption: any) => {
-    console.log(selectedOption);
+    console.log({selectedOption});
     const selectedAuditorium = auditoriums.filter(
-      (a) => a.audID === selectedOption.value
+      (a) => a?.audID === selectedOption?.value
     )[0];
-    setAllFeatures(selectedAuditorium.features);
+    setAllFeatures(selectedAuditorium?.features);
     handleSelectChange({ value: selectedOption, name: "name" });
   };
 
@@ -91,7 +95,7 @@ const Step1 = (props: Props) => {
             </label>
             <Select
               options={auditoriumOptions}
-              value={name}
+              value={name} 
               id="name"
               name="name"
               placeholder={"Select Auditorium"}
@@ -104,7 +108,7 @@ const Step1 = (props: Props) => {
               onBlur={onBlur}
             />
             <small className="form-error">
-              {touched.name && formErrors.name}
+              {touched?.name && formErrors?.name?.label}
             </small>
           </div>
         </div>

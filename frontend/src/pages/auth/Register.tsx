@@ -11,12 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { register, reset } from "../../features/auth/authslice";
 import ButtonLoader from "../../components/buttonLoader";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { IBoolean, IRegister, IString } from "../../utils/interfaces";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { registerValidationSchema } from "./validation";
 import { HiChevronDown } from "react-icons/hi";
-import { userCategories } from "../../constants";
+import { userCategories } from "../../utils/constant";
 
 type Props = {};
 
@@ -78,7 +78,7 @@ const Register = (props: Props) => {
   const location = useLocation();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.auth
+    (state: RootState) => state.auth
   );
 
   useEffect(() => {

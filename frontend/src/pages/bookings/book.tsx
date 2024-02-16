@@ -20,7 +20,7 @@ import {
   IString,
 } from "../../utils/interfaces";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { toast } from "react-toastify";
 import { fetch, reset } from "../../features/auditoriums/auditoriumSlice";
 import ButtonLoader from "../../components/buttonLoader";
@@ -119,7 +119,7 @@ const BookAuditorium = (props: Props) => {
     data: {};
   }>({
     title: "",
-    message: <span></span>,
+    message: <p></p>,
     status: false,
     type: "success",
     data: {},
@@ -138,7 +138,7 @@ const BookAuditorium = (props: Props) => {
     isError: isError1,
     isSuccess: isSuccess1,
     message: message1,
-  } = useSelector((state: any) => state.auditorium);
+  } = useSelector((state: RootState) => state.auditorium);
 
   const {
     data: data2,
@@ -147,9 +147,9 @@ const BookAuditorium = (props: Props) => {
     isError: isError2,
     isSuccess: isSuccess2,
     message: message2,
-  } = useSelector((state: any) => state.booking);
+  } = useSelector((state: RootState) => state.booking);
 
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const selectedAuditorium = auditoriums.filter(
     (a: any) => a.audID === params?.name?.value
@@ -214,6 +214,7 @@ const BookAuditorium = (props: Props) => {
 
   const handleSelectChange = (props: ICustomSelect) => {
     const { name, value } = props;
+    console.log(props)
     customSetState(name, value);
   };
 
@@ -657,6 +658,7 @@ const BookAuditorium = (props: Props) => {
             body={modalContent.message}
             onSubmit={onProceed}
             isLoading={false}
+            mode={"alert"}
           />
         </>
       )}

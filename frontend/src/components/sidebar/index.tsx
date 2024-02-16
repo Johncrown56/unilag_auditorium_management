@@ -3,8 +3,9 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import Logo from "../../assets/imgs/unilag-white-text.png";
 import SidebarLinkGroup from "./linkGroup";
 import { useSelector } from "react-redux";
-import { menus } from "../../constants/";
 import { MdClose } from "react-icons/md";
+import { RootState } from "../../store/store";
+import { menus } from "../../utils/constant";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -14,7 +15,7 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { firstName, role } = user;
 
   const filteredMenus = menus.filter(

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IBooking, IChangeStatus, IRequest } from "../../utils/interfaces";
 import bookingService from "./bookingService";
-import { GetThunkAPI } from "@reduxjs/toolkit/dist/createAsyncThunk";
 
 const initialState: IRequest = {
   isError: false,

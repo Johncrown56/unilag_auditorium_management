@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { fetch, reset } from "../../features/auditoriums/auditoriumSlice";
 import { AuditoriumResponse } from "../../utils/interfaces";
 import FullLoader from "../../components/fullLoader";
@@ -19,7 +19,7 @@ const ViewAuditorium = (props: Props) => {
   };
 
   const { data, isLoading, isFullLoading, isError, isSuccess, message } =
-    useSelector((state: any) => state.auditorium);
+    useSelector((state: RootState) => state.auditorium);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -38,7 +38,7 @@ const ViewAuditorium = (props: Props) => {
   }, [data, isError, isSuccess, message, dispatch]);
 
   if (isLoading) {
-    return <FullLoader />;
+    return <FullLoader loading={isLoading}/>;
   }
   return (
     <>

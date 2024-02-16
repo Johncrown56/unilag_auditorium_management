@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { IBoolean, IForgotPassword, IString } from "../../utils/interfaces";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { forgotPassword, login, reset } from "../../features/auth/authslice";
 import ButtonLoader from "../../components/buttonLoader";
 import { forgotPasswordValidationSchema } from "./validation";
@@ -27,7 +27,7 @@ const ForgotPassword = () => {
 
   const { email } = formData;
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.auth
+    (state: RootState) => state.auth
   );
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();

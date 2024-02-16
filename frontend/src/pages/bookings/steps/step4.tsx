@@ -8,6 +8,7 @@ import {
 import Dropzone from "../../../components/dropzone";
 import { NumericFormat } from "react-number-format";
 import { ChangeEvent } from "react";
+import { RootState } from "../../../store/store";
 
 interface Props extends IStepFormState {
   params: IBooking;
@@ -28,7 +29,7 @@ const Step4 = (props: Props) => {
     totalPrice,
     setReceipt,
   } = props;
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { userCategory } = user;
   const { paymentStatus, paymentMethod } = params;
 
@@ -51,6 +52,21 @@ const Step4 = (props: Props) => {
     },
   ];
 
+  const transferDetails = [
+    {
+      name: "Bank",
+      value: process.env.REACT_APP_BANK_NAME
+    },
+    {
+      name: "Account No",
+      value: process.env.REACT_APP_ACCOUNT_NO
+    },
+    {
+      name: "Account Name:",
+      value: process.env.REACT_APP_BANK_ACCOUNT
+    }
+  ]
+
   if (currentStep !== 4) {
     return null;
   }
@@ -71,7 +87,7 @@ const Step4 = (props: Props) => {
 
   return (
     <div>
-      {paymentMethod?.value ? (
+      {paymentMethod?.value === "Remita" ? (
         <>
           <div className="pb-4 px-7">
             <h3 className="font-medium text-center text-black dark:text-white">
@@ -96,13 +112,13 @@ const Step4 = (props: Props) => {
           </div>
         </>
       ) : (
-        <>
+        <div  className="">
           <div className="pb-4 px-7">
             <h3 className="font-medium text-center text-black dark:text-white">
               Make Payment to UNILAG Auditorium account details below;
             </h3>
           </div>
-          <div className="pb-4 px-0">
+          {/* <div className="pb-4 px-0">
             <p>
               <span className="font-bold">Bank: </span>
               {process.env.REACT_APP_BANK_NAME}
@@ -115,8 +131,18 @@ const Step4 = (props: Props) => {
               <span className="font-bold">Account Name: </span>{" "}
               {process.env.REACT_APP_BANK_ACCOUNT}
             </p>
-          </div>
-        </>
+          </div> */}
+
+            <div className="flex">
+              {transferDetails.map((item, i)=> (
+              <div className="flex flex-row flex-wrap mr-3 ">
+                <span className="leading-6 mr-3 font-medium text-black dark:text-white">{item.name}: </span>
+                <span className="leading-6 mr-3 opacity-50 font-medium text-black dark:text-white">{item.value}</span>
+              </div>
+              ))}
+            </div>
+
+        </div>
       )}
 
       <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">

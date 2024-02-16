@@ -7,8 +7,8 @@ type Props = {
 const ModalBody = (props: Props) => {
   const { children } = props;
   return (
-    <div>
-      <p className="mb-10">{children}</p>
+    <div className="mb-10">
+    {children}
     </div>
   );
 };

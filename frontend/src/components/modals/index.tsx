@@ -1,16 +1,17 @@
 import { ReactNode } from "react";
 import ModalContainer from "./modalContainer";
-import { IResponseType } from "../../utils/interfaces";
+import { IModalMode, IResponseType } from "../../utils/interfaces";
 
 type Props = {
   showModal: boolean;
-  setShowModal: (value: boolean) => void;
   id?: string;
   title: string;
   body: ReactNode;
-  type: IResponseType;
-  onSubmit: () => void;
+  type?: IResponseType;
   isLoading: boolean;
+  mode: IModalMode;
+  onSubmit?: () => void;
+  setShowModal: (value: boolean) => void;
 };
 
 const Modal = (props: Props) => {
@@ -23,6 +24,7 @@ const Modal = (props: Props) => {
     body,
     onSubmit,
     isLoading,
+    mode
   } = props;
   return (
     <ModalContainer
@@ -34,6 +36,7 @@ const Modal = (props: Props) => {
       body={body}
       onSubmit={onSubmit}
       isLoading={isLoading}
+      mode={mode}
     />
   );
 };

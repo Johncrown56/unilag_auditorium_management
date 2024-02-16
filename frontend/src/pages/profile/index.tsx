@@ -2,9 +2,10 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useSelector } from "react-redux";
 import ChangePassword from "../../components/changePassword";
+import { RootState } from "../../store/store";
 
 const Profile = () => {
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const {
     email,
     firstName,

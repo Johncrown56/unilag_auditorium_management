@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import auditoriumService from "./auditoriumService";
-import { IAuditorium, IBooking } from "../../utils/interfaces";
+import { IAuditorium, IRequest } from "../../utils/interfaces";
 
-const initialState = {
+const initialState: IRequest = {
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -53,9 +53,9 @@ export const fetch = createAsyncThunk(
 // update auditorium
 export const update = createAsyncThunk(
   "auditorium/update",
-  async (data: IAuditorium, thunkAPI) => {
+  async (data: {id: string, data: IAuditorium}, thunkAPI) => {
     try {
-      const res = await auditoriumService.update(data);
+      const res = await auditoriumService.update(data.id, data.data);
       return res;
     } catch (error: any) {
       const message =

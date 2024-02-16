@@ -3,17 +3,18 @@ import ModalTitle from "./modalTitle";
 import ModalBody from "./modalBody";
 import ModalFooter from "./modalFooter";
 import ModalHeader from "./modalHeader";
-import { IResponseType } from "../../utils/interfaces";
+import { IModalMode, IResponseType } from "../../utils/interfaces";
 
 type Props = {
   showModal: boolean;
-  setShowModal: (value: boolean) => void;
   id: string;
   title: string;
   body: ReactNode;
-  type: IResponseType;
-  onSubmit: () => void;
+  type?: IResponseType;
   isLoading: boolean;
+  mode: IModalMode;
+  setShowModal: (value: boolean) => void;
+  onSubmit?: () => void;
 };
 
 const ModalContainer = (props: Props) => {
@@ -26,6 +27,7 @@ const ModalContainer = (props: Props) => {
     body,
     onSubmit,
     isLoading,
+    mode,
   } = props;
   return (
     <div
@@ -37,9 +39,9 @@ const ModalContainer = (props: Props) => {
       <div className="relative z-30">
         <div className="fixed inset-0 bg-black/25" />
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <div className="w-full max-w-142.5 rounded-lg bg-white py-12 px-8 text-center dark:bg-boxdark md:py-15 md:px-17.5">
-              <ModalHeader type={type} />
+          <div className={`${ mode === "form" ? "" : "p-44 text-center"} flex min-h-full items-center justify-center `}>
+            <div className={`${ mode === "form" ? "" : "text-center"} w-full max-w-142.5 rounded-lg bg-white py-12 px-8 dark:bg-boxdark md:py-10 md:px-10`}>
+              <ModalHeader type={type} setShowModal={setShowModal} />
               <ModalTitle>{title}</ModalTitle>
               <ModalBody>{body}</ModalBody>
               <ModalFooter
@@ -47,6 +49,7 @@ const ModalContainer = (props: Props) => {
                 setShowModal={setShowModal}
                 onSubmit={onSubmit}
                 isLoading={isLoading}
+                mode={mode}
               />
             </div>
           </div>

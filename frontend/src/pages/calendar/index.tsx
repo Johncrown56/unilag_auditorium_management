@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CalendarComponent from "../../components/calendarComponent";
 import { fetch, reset } from "../../features/bookings/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { toast } from "react-toastify";
 import moment from "moment";
 
@@ -11,7 +11,7 @@ type Props = {};
 const Calendar = (props: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, type, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.booking
+    (state: RootState) => state.booking
   );
   const [bookings, setBookings] = useState<any[]>([]);
 

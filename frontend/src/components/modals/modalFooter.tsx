@@ -1,16 +1,20 @@
 import React from "react";
+import { IModalMode } from "../../utils/interfaces";
 
 type Props = {
   setShowModal: (value: boolean) => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   id: string;
   isLoading: boolean;
+  mode: IModalMode;
 };
 
 const ModalFooter = (props: Props) => {
-  const { id, onSubmit, setShowModal, isLoading } = props;
+  const { id, onSubmit, setShowModal, isLoading, mode } = props;
   return (
-    <div className="-mx-3 flex flex-wrap gap-y-4">
+    <>
+    {mode === "alert" && (
+      <div className="-mx-3 flex flex-wrap gap-y-4">
       <div className="w-full px-3 2xsm:w-1/2">
         <button
           className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1"
@@ -31,6 +35,8 @@ const ModalFooter = (props: Props) => {
         </button>
       </div>
     </div>
+    )}
+    </>    
   );
 };
 

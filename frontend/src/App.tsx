@@ -45,6 +45,8 @@ import FrontAuditoriumViewOne from "./pages/front/auditoriums/view-one";
 import FrontAuditoriumView from "./pages/front/auditoriums/view";
 import Faq from "./pages/faq";
 import EventGallery from "./pages/event-gallery";
+import Features from "./pages/features";
+import Categories from "./pages/categories";
 
 interface PublicRouteProps {
   path: string;
@@ -68,7 +70,7 @@ function App() {
 
   const OnIdle = () => {
     console.log("idle function called");
-    removeItem(AuthConstants());
+    //removeItem(AuthConstants());
     return (
       <Navigate to="/login" replace state={{ from: location?.pathname }} />
     );
@@ -119,7 +121,10 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/notifications" element={<Notications />} />
-              <Route path="/referrals" element={<Referrals />} />
+              <Route path="/referrals" element={<Referrals />} /> 
+              <Route path="/features" element={<Features />} />
+              <Route path="/categories" element={<Categories />} />
+
             </Route>
             {/* </IdleTimerProvider> */}
           </Routes>

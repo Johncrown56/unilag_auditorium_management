@@ -2,7 +2,7 @@ import { ApexOptions } from "apexcharts";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { countUser, reset } from "../../features/report/reportSlice";
 
 interface ChartThreeState {
@@ -59,8 +59,8 @@ const ChartThree: React.FC = () => {
     series: [0, 0, 0, 0],
     total: 0,
   });
-  const { data, type, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.report
+  const { data, isFullLoading, isError, isSuccess, message } = useSelector(
+    (state: RootState) => state.report
   );
 
   const dispatch = useDispatch<AppDispatch>();

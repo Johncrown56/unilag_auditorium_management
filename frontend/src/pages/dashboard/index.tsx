@@ -9,7 +9,7 @@ import ChartThree from "../../components/charts/ChartThree";
 import TableOne from "../../components/Tables/TableOne";
 import MapOne from "../../components/Maps/MapOne";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import {
   fetch as fetchAuditorium,
   reset as resetAuditorium,
@@ -28,7 +28,7 @@ type Props = {};
 
 const Dashboard = (props: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { firstName, role } = user;
   const {
     data: data1,
@@ -37,7 +37,7 @@ const Dashboard = (props: Props) => {
     isError,
     isSuccess,
     message,
-  } = useSelector((state: any) => state.booking);
+  } = useSelector((state: RootState) => state.booking);
   // const { data: data2 } = useSelector((state: any) => state.auditorium);
 
   // const { data: data3 } = useSelector((state: any) => state.users);

@@ -14,7 +14,7 @@ import {
   IString,
 } from "../../utils/interfaces";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { toast } from "react-toastify";
 import { create, reset } from "../../features/auditoriums/auditoriumSlice";
 import { PiWarehouseBold } from "react-icons/pi";
@@ -79,7 +79,7 @@ const CreateAuditorium = (props: Props) => {
   const animatedComponents = makeAnimated();
 
   const { data, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.auditorium
+    (state: RootState) => state.auditorium
   );
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

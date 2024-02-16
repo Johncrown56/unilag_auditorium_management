@@ -226,7 +226,13 @@ export interface IupdateProfile {
 }
 export type IResponseType = "error" | "success" | "info";
 
+export type IModalMode = "form" | "alert";
+
+export type IMode = "Create" | "Edit" | "View" | "Delete" | "Cancel";
+
 export type IChangeStatus = {
   id: number;
   status: string;
 };
+
+export interface IFeat {id?: string, name: string, description: string}

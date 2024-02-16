@@ -1,44 +1,40 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import DatatableFooter from "../../components/datatable/datatableFooter";
-import DatatableHeader from "../../components/datatable/datatableHeader";
-import DatatableHead from "../../components/datatable/datatableHead";
-import moment from "moment";
-import { BiEdit } from "react-icons/bi";
-import { HiEye, HiTrash } from "react-icons/hi2";
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import DatatableFooter from "./footer";
+import DatatableHeader from "./header";
+import DatatableHead from "./head";
+import DatatableBody from "./body";
 
 type Props = {
   list: Array<any>;
-  properties: Array<any>;
-  filterOpen: boolean;
+  columns: { name: string; label: string, display?: string }[];
+  idColumnName: string;
   paginateData?: any;
   loadData?: any;
   statusData?: any;
-  checkAll: boolean;
-  openDropdownIndex: boolean;
+  title: string;
+  showFilter: boolean;
   loadDataBySearch?: (value: string) => void;
-  viewBooking: (value: string) => void;
-  editBooking: (value: string) => void;
-  openCancelBookingModal: (value: string) => void;
-  handleEditClick: (value: string) => void;
-  toggleFilter: () => void;
+  createButton?: () => void;
+  viewButton?: (value: any) => void;
+  editButton?: (value: any) => void;
+  cancelButton?: (value: any) => void;
 };
 
 const Datatable = (props: Props) => {
   const {
     list,
-    properties,
-    filterOpen,
+    title,
     paginateData = null,
     loadData = null,
     statusData = null,
-    checkAll,
-    openDropdownIndex,
     loadDataBySearch = null,
-    handleEditClick,
-    openCancelBookingModal,
-    viewBooking,
-    editBooking,
-    toggleFilter,
+    cancelButton,
+    createButton,
+    viewButton,
+    editButton,
+    columns,
+    idColumnName,
+    showFilter
   } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const [numberPerPage, setNumberPerPage] = useState(10);
@@ -47,6 +43,16 @@ const Datatable = (props: Props) => {
   const [searchValue, setSearchValue] = useState("");
   const [filteredStatus, setfilteredStatus] = useState("");
   const [check, setCheck] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [filterOpen, setfilterOpen] = useState(false);
+  
+  const toggleFilter = () => {
+    setfilterOpen(!filterOpen);
+  };
+
+  const handleAction = (index: any) => {
+    setOpenDropdown(openDropdown === index ? null : index);
+  };
 
   useEffect(() => {
     if (paginateData) {
@@ -65,7 +71,7 @@ const Datatable = (props: Props) => {
     setData(newList);
     setFilteredData(newList);
     //setSort(dataProperty.map(() => null));
-  }, [list, properties]);
+  }, [list, columns]);
 
   const searchByValue = (value: string) => {
     if (paginateData && loadDataBySearch) {
@@ -74,12 +80,12 @@ const Datatable = (props: Props) => {
     setSearchValue(value);
   };
 
-  const searchByStatus = (value: string) => {
+  const filterByStatus = (value: string) => {
     if (paginateData && loadDataBySearch) {
       loadDataBySearch(value);
     }
     setfilteredStatus(value);
-    toggleFilter();
+    toggleFilter && toggleFilter();
   };
 
   const resetCheck = useCallback(() => {
@@ -116,11 +122,7 @@ const Datatable = (props: Props) => {
       return result.slice(startIndex, endIndex);
     }
 
-    if (
-      filteredStatus.length &&
-      filteredStatus !== "All" &&
-      paginateData === null
-    ) {
+    if ( filteredStatus.length > 0 && filteredStatus !== "All" && paginateData === null ) {
       const result = data.filter((item) =>
         item?.status.toLowerCase().includes(filteredStatus.toLowerCase())
       );
@@ -129,7 +131,7 @@ const Datatable = (props: Props) => {
     }
 
     return paginateData ? data : data.slice(startIndex, endIndex); //sortFilterResult(paginateData ? data : data.slice(startIndex, endIndex));
-  }, [currentPage, numberPerPage, searchValue, data, properties, paginateData]);
+  }, [currentPage, numberPerPage, searchValue, data, filteredStatus, paginateData]);
 
   const totalPage = useMemo(() => {
     return paginateData
@@ -262,136 +264,21 @@ const Datatable = (props: Props) => {
         <div className="mx-auto max-w-screen-xl px-4 lg:px-3">
           <div className="bg-white dark:bg-gray-800 border-t relative shadow-lg sm:rounded-lg overflow-hidden">
             <DatatableHeader
-              filterOpen={filterOpen}
+              filterOpen={filterOpen!}
               searchValue={searchValue}
-              onChangeSearchValue={searchByValue}
-              toggleFilter={toggleFilter}
+              title={title}
+              showFilter={showFilter}
               filteredStatus={filteredStatus}
-              filterStatus={searchByStatus}
-              checkAll={checkAll}
-              paginateData={paginateData}
-              //loading={loading}
+              createButton={createButton}
+              onChangeSearchValue={searchByValue}
+              toggleFilter={toggleFilter!}
+              filterByStatus={filterByStatus}
             />
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <DatatableHead properties={properties} />
-                <tbody>
-                  {showData.length > 0 &&
-                    showData.map((b, i) => (
-                      <tr key={i} className="border-b dark:border-gray-700">
-                        <th
-                          scope="row"
-                          className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {b.name}
-                        </th>
-                        <td className="px-4 py-3">{b.bookingId}</td>
-                        <td className="px-4 py-3">{b?.category?.name}</td>
-                        <td className="px-4 py-3">{b?.purpose}</td>
-                        <td className="px-4 py-3">
-                          {moment(b.dateCreated).format("DD MMM, YYYY. HH:mmA")}
-                        </td>
-                        <td className="px-4 py-3">
-                          <p
-                            className={`${
-                              b.paymentStatus == 1
-                                ? "bg-success-600 text-success-500"
-                                : "bg-danger-600 text-danger-600"
-                            } inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium`}
-                          >
-                            {b.paymentStatus == 1 ? "Paid" : "Unpaid"}
-                          </p>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center">
-                            <div
-                              className={`${
-                                b.status === "Approved"
-                                  ? "bg-green-600"
-                                  : b.status === "Pending"
-                                  ? "bg-red-600"
-                                  : "bg-yellow-600"
-                              } border rounded-full w-3 h-3 mr-2 `}
-                            ></div>
-                            {b.status}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 items-center justify-end">
-                          <button
-                            onClick={() => handleEditClick(b.bookingId)}
-                            className="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
-                            type="button"
-                          >
-                            <svg
-                              className="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                            </svg>
-                          </button>
-
-                          <div
-                            id={"id-" + i}
-                            className={`${
-                              openDropdownIndex === b.bookingId
-                                ? "block"
-                                : "hidden"
-                            } absolute z-10 w-44 m-0 right-0 bg-white transform opacity-100 scale-100 origin-top-right rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600`}
-                          >
-                            <ul
-                              className="py-1 text-sm text-gray-700 dark:text-gray-200"
-                              aria-labelledby={"id-" + i}
-                            >
-                              <li>
-                                <button
-                                  className="text-gray-900 group flex w-full items-center px-2 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                  id={`view-booking-${i}`}
-                                  onClick={() => viewBooking(b.bookingId)}
-                                >
-                                  <HiEye
-                                    className="mr-2 h-5 w-5"
-                                    color="#a80a0a"
-                                  />
-                                  View Booking
-                                </button>
-                              </li>
-                              <li>
-                                <button
-                                  id={`edit-booking-${i}`}
-                                  onClick={() => editBooking(b.bookingId)}
-                                  className="text-gray-900 group flex w-full items-center px-2 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                >
-                                  <BiEdit
-                                    className="mr-2 h-5 w-5"
-                                    color="#a80a0a"
-                                  />
-                                  Edit Booking
-                                </button>
-                              </li>
-                              <li>
-                                <button
-                                  className="text-gray-900 group flex w-full items-center px-2 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                  id={`cancel-booking-${i}`}
-                                  onClick={() =>
-                                    openCancelBookingModal(b.bookingId)
-                                  }
-                                >
-                                  <HiTrash
-                                    className="mr-2 h-5 w-5"
-                                    color="#a80a0a"
-                                  />
-                                  Cancel Booking
-                                </button>
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
+                <DatatableHead columns={columns} />
+                <DatatableBody showData={showData} columns={columns} title={title} handleAction={handleAction} idColumnName={idColumnName}
+                  openDropdown={openDropdown} viewButton={viewButton} editButton={editButton} cancelButton={cancelButton} setOpenDropdown={setOpenDropdown} />
               </table>
             </div>
             {showData.length === 0 && (
@@ -401,7 +288,8 @@ const Datatable = (props: Props) => {
             )}
 
             <DatatableFooter
-              data={filteredData}
+              data={data}
+              paginatedData={showData}
               numberPerPage={numberPerPage}
               onChangeNumberPerPage={handlePerPageChange}
               totalPage={totalPage}
@@ -418,3 +306,7 @@ const Datatable = (props: Props) => {
 };
 
 export default Datatable;
+
+
+
+

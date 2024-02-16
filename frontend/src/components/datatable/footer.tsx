@@ -1,8 +1,10 @@
 import React, { useMemo } from "react";
 import { scrollTop } from "../../utils/helpers";
+import { numbersPerPage } from "../../utils/constant";
 
 type Props = {
   data: Array<any>;
+  paginatedData: Array<any>;
   currentPage: number;
   numberPerPage: number;
   totalPage: number;
@@ -15,6 +17,7 @@ type Props = {
 const DatatableFooter = (props: Props) => {
   const {
     data,
+    paginatedData,
     currentPage = 0,
     totalPage = 0,
     numberPerPage = 10,
@@ -43,10 +46,9 @@ const DatatableFooter = (props: Props) => {
     scrollToPagination();
   };
 
-  const active =
-    "px-3 py-1.5 bg-primary-600 font-medium rounded-md text-sm text-white hover:outline-none focus:outline-none hover:bg-primary-700";
-  const notActive =
-    "px-3 py-1.5 text-gray-600 font-medium hover:text-primary-500 hover:bg-primary-100 rounded-md text-sm hover:outline-none focus:outline-none";
+  const main = "px-3 py-1.5 font-medium text-sm rounded-md hover:outline-none focus:outline-none ";
+  const active = "bg-primary-600 text-white hover:bg-primary-700";
+  const notActive = "text-gray-600 text-black hover:bg-primary-100 hover:text-primary-500 ";
   const buttonHover =
     "w-8 h-8 text-gray-500 px-1 py-0.5 rounded-md hover:bg-primary-100 hover:text-primary-500";
   const buttonNotHover = "w-8 h-8 text-gray-300  px-1 py-0.5";
@@ -89,16 +91,16 @@ const DatatableFooter = (props: Props) => {
             value={numberPerPage}
             onChange={(e) => onChangeNumberPerPage(Number(e.target.value))}
           >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
+            {numbersPerPage.map((item, i)=> (
+            <option key={i} value={item}>{item}</option>
+          ))}
           </select>
 
           <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
             Showing{" "}
             <span className="font-semibold text-gray-900 dark:text-white">
               {1 + startIndex} - {` `}
-              {data.length < endIndex ? data.length : endIndex}
+              {paginatedData.length}
               {` `}
             </span>
             of
@@ -134,7 +136,7 @@ const DatatableFooter = (props: Props) => {
             pages.map((item: any, index: number) => (
               <button
                 key={index}
-                className={item === currentPage ? active : notActive}
+                className={`${item === currentPage ? active : notActive} ${main}`}
                 onClick={() => onGotoPage(item)}
               >
                 {item}
@@ -144,7 +146,7 @@ const DatatableFooter = (props: Props) => {
           {pagesLength >= 11 && (
             <>
               <button
-                className={firstPage === currentPage ? active : notActive}
+                className={`${firstPage === currentPage ? active : notActive} ${main}`}
                 onClick={() => onGotoPage(firstPage)}
               >
                 {firstPage}
@@ -154,7 +156,7 @@ const DatatableFooter = (props: Props) => {
                 firstNextPages.map((item, index) => (
                   <button
                     key={index}
-                    className={item === currentPage ? active : notActive}
+                    className={`${item === currentPage ? active : notActive } ${main}`}
                     onClick={() => onGotoPage(item)}
                   >
                     {item}
@@ -172,7 +174,7 @@ const DatatableFooter = (props: Props) => {
                 centerPages.map((item, index) => (
                   <button
                     key={index}
-                    className={item === currentPage ? active : notActive}
+                    className={`${item === currentPage ? active : notActive} ${main}`}
                     onClick={() => onGotoPage(item)}
                   >
                     {item}
@@ -189,7 +191,7 @@ const DatatableFooter = (props: Props) => {
                 lastPreviousPages.map((item, index) => (
                   <button
                     key={index}
-                    className={item === currentPage ? active : notActive}
+                    className={`${item === currentPage ? active : notActive } ${main}`}
                     onClick={() => onGotoPage(item)}
                   >
                     {item}
@@ -197,7 +199,7 @@ const DatatableFooter = (props: Props) => {
                 ))}
 
               <button
-                className={lastPage === currentPage ? active : notActive}
+                className={`${lastPage === currentPage ? active : notActive } ${main}`}
                 onClick={() => onGotoPage(lastPage)}
               >
                 {lastPage}

@@ -24,8 +24,8 @@ const fetchOne = async (id: string) => {
 };
 
 // update auditorium
-const update = async (data: IAuditorium) => {
-  const response = await api.put(baseUrl, data);
+const update = async (id: string, data: IAuditorium) => {
+  const response = await api.put(baseUrl+ "/" + id, data);
   return response.data;
 };
 

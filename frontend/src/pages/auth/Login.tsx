@@ -6,7 +6,7 @@ import { login, reset } from "../../features/auth/authslice";
 import ButtonLoader from "../../components/buttonLoader";
 import logo from "../../assets/imgs/unilag-logo-text.png";
 import { IBoolean, ILogin } from "../../utils/interfaces";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { loginValidationSchema } from "./validation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -33,7 +33,7 @@ const Login = (props: Props) => {
   //const from = location?.state?.from;
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.auth
+    (state: RootState) => state.auth
   );
 
   useEffect(() => {

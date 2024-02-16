@@ -1,7 +1,7 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { toast } from "react-toastify";
 import {
   changeStatus,
@@ -15,7 +15,7 @@ import useFetch from "../../hooks/useFetch";
 import endpoint from "../../utils/endpoints";
 import { PulseLoader } from "react-spinners";
 import {
-  bookingHeaders,
+  bookingColumns,
   cssOverride,
   primaryColor,
 } from "../../utils/constant";
@@ -23,25 +23,16 @@ import {
 const ViewBookings = () => {
   const [bookings, setBookings] = useState<any[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [bookingId, setBookingId] = useState<string>("");
-  const [filterOpen, setfilterOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  const toggleFilter = () => {
-    setfilterOpen(!filterOpen);
-  };
-
-  const handleEditClick = (index: any) => {
-    setOpenDropdownIndex(openDropdownIndex === index ? null : index);
-  };
+ 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { data, type, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.booking
+    (state: RootState) => state.booking
   );
   const {
     data: data2,
@@ -57,8 +48,7 @@ const ViewBookings = () => {
 
   useEffect(() => {
     if (!success) {
-      console.log({success})
-      toast.error(message2);
+      message2 !== "" && toast.error(message2);
     }
     if (success && data2 != null) {
       console.log(data2);
@@ -68,11 +58,11 @@ const ViewBookings = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message);
+      message !== "" &&toast.error(message);
     }
     if (isSuccess && data != null) {
       console.log(data);
-      toast.success(message);
+      message !== "" && toast.success(message);
       if (openModal) {
         setOpenModal(false);
       }
@@ -107,22 +97,28 @@ const ViewBookings = () => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
-  const editBooking = (id: string) => {
-    navigate(`/bookings/edit/${id}`);
+  const createBooking = () => {
+    navigate(`/bookings/create`);
   };
 
-  const viewBooking = (id: string) => {
-    navigate(`/bookings/view/${id}`);
+  const editBooking = (item: any) => {
+    console.log(item)
+    const {bookingId: bId} = item;
+    navigate(`/bookings/edit/${bId}`);
+  };
+
+  const viewBooking = (item: any) => {
+    const {bookingId: bId} = item;
+    navigate(`/bookings/view/${bId}`);
   };
 
   const cancelBooking = () => {
-    console.log(bookingId);
     dispatch(changeStatus({ id: Number(bookingId), status: "Cancelled" }));
   };
 
-  const openCancelBookingModal = (id: string) => {
-    setBookingId(id);
-    setOpenDropdownIndex(null);
+  const openCancelBookingModal = (item: any) => {
+    const {bookingId: bId} = item;
+    setBookingId(bId);
     setOpenModal(true);
   };
 
@@ -145,15 +141,14 @@ const ViewBookings = () => {
         <Breadcrumb pageName="View Bookings" />
         <Datatable
           list={bookings?.slice()?.reverse()}
-          properties={bookingHeaders}
-          filterOpen={filterOpen}
-          checkAll={true}
-          handleEditClick={handleEditClick}
-          openDropdownIndex={openDropdownIndex!}
-          openCancelBookingModal={openCancelBookingModal}
-          editBooking={editBooking}
-          viewBooking={viewBooking}
-          toggleFilter={toggleFilter}
+          columns={bookingColumns}
+          idColumnName={"bookingId"}
+          title={"Booking"}
+          showFilter={true}
+          createButton={createBooking}
+          editButton={editBooking}
+          viewButton={viewBooking}
+          cancelButton={openCancelBookingModal}          
         />
       </div>
 
@@ -164,13 +159,14 @@ const ViewBookings = () => {
         title={"Cancel Booking"}
         type={"error"}
         body={
-          <span>
+          <p>
             Are you sure you want to cancel this booking? Please note that you
             can not reactivate this booking.
-          </span>
+          </p>
         }
         onSubmit={cancelBooking}
         isLoading={isLoading}
+        mode={"alert"}
       />
     </>
   );

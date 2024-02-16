@@ -10,7 +10,7 @@ import { NumericFormat } from "react-number-format";
 import { TbCurrencyNaira } from "react-icons/tb";
 import Select from "react-select";
 import moment from "moment";
-import { paymentOptions } from "../../../constants";
+import { paymentOptions } from "../../../utils/constant";
 
 interface Props extends IStepFormState {
   params: IBooking;

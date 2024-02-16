@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { fetchOne, reset } from "../../features/bookings/bookingSlice";
+import { AppDispatch, RootState } from "../../store/store";
+import { changeStatus, fetchOne, reset } from "../../features/bookings/bookingSlice";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { PulseLoader } from "react-spinners";
+import { cssOverride, primaryColor } from "../../utils/constant";
+import Modal from "../../components/modals";
 
 type Props = {};
+type IStatus = "Approved" | "Pending" | "Cancelled";
 
 const ViewBookingOne = (props: Props) => {
   const params = useParams();
@@ -15,8 +19,10 @@ const ViewBookingOne = (props: Props) => {
   const { id } = params;
   const dispatch = useDispatch<AppDispatch>();
   const [bookings, setBookings] = useState<any>({});
+  const [openModal, setOpenModal] = useState(false);
+  const [status, setStatus] = useState<IStatus>("Pending");
   const { data, type, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.booking
+    (state: RootState) => state.booking
   );
 
   useEffect(() => {
@@ -25,20 +31,46 @@ const ViewBookingOne = (props: Props) => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message);
+      message !== "" && toast.error(message);
     }
     if (isSuccess && data != null) {
       console.log(data);
       setBookings(data[0]);
+      console.log(type);
+      if(type != "booking/fetchOne/fulfilled"){
+        message !== "" && toast.success(message);
+        if (openModal) {
+          setOpenModal(false);
+        }
+        dispatch(fetchOne(id!));
+      }
     }
     dispatch(reset());
   }, [data, isLoading, isError, isSuccess, message, dispatch]);
 
+  const onSubmit = () => {
+    dispatch(changeStatus({ id: Number(bookings?.bookingId), status }));
+  };
+
+  const openBookingModal = (value: IStatus) => {
+    console.log(value);
+    setStatus(value);
+    setOpenModal(true);
+  };
+
   if (isLoading) {
-    return <span> Loading</span>;
+    return (
+      <PulseLoader
+        color={primaryColor}
+        loading={isLoading}
+        cssOverride={cssOverride}
+        // size={150}
+      />
+    );
   }
 
   return (
+    <>
     <div className="mx-auto max-w-270">
       <Breadcrumb pageName="View Booking Details" />
 
@@ -52,9 +84,9 @@ const ViewBookingOne = (props: Props) => {
               <h4 className="mb-4 text-2xl font-semibold text-black dark:text-white">
                 {bookings.name}
               </h4>
-              <a href="#" className="block">
+              {/* <a href="#" className="block">
                 <span className="font-medium">Auditorium:</span> {bookings.name}
-              </a>
+              </a> */}
               <span className="mt-2 block">
                 <span className="font-medium">Purpose:</span> {bookings.purpose}
               </span>
@@ -81,10 +113,10 @@ const ViewBookingOne = (props: Props) => {
             </div>
           </div>
           <h3 className="text-2xl font-semibold text-black dark:text-white">
-            Booking Id #{id}
+            Booking Id #{bookings.bookingId}
           </h3>
         </div>
-        <div className="my-10 rounded-sm border border-stroke p-5 dark:border-strokedark">
+        {/* <div className="my-10 rounded-sm border border-stroke p-5 dark:border-strokedark">
           <div className="items-center sm:flex">
             <div className="mb-3 mr-6 h-20 w-20 sm:mb-0">
               <img
@@ -116,9 +148,9 @@ const ViewBookingOne = (props: Props) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="-mx-4 flex flex-wrap">
-          <div className="w-full px-4 sm:w-1/2 xl:w-3/12">
+          {/* <div className="w-full px-4 sm:w-1/2 xl:w-3/12">
             <div className="mb-10">
               <h4 className="mb-4 text-xl font-semibold text-black dark:text-white md:text-2xl">
                 Shipping Method
@@ -139,13 +171,13 @@ const ViewBookingOne = (props: Props) => {
                 **** **** **** 5874
               </p>
             </div>
-          </div>
+          </div> */}
           <div className="w-full px-4 xl:w-6/12">
             <div className="mr-10 text-right md:ml-auto">
-              <div className="ml-auto sm:w-1/2">
+              {/* <div className="ml-auto sm:w-1/2">
                 <p className="mb-4 flex justify-between font-medium text-black dark:text-white">
                   <span> Subtotal </span>
-                  <span> $120.00 </span>
+                  <span> {} </span>
                 </p>
                 <p className="mb-4 flex justify-between font-medium text-black dark:text-white">
                   <span> Shipping Cost (+) </span>
@@ -155,13 +187,14 @@ const ViewBookingOne = (props: Props) => {
                   <span> Total Payable </span>
                   <span> $130.00 </span>
                 </p>
-              </div>
+              </div> */}
+              {bookings?.status === "Pending" || bookings?.status === "Cancelled"}
               <div className="mt-10 flex flex-col justify-end gap-4 sm:flex-row">
-                <button className="flex items-center justify-center rounded border border-primary-600 py-2.5 px-8 text-center font-medium text-primary-600 hover:bg-opacity-90">
-                  Cancel Booking
+                <button onClick={() =>openBookingModal("Cancelled")} className="flex items-center justify-center rounded border border-primary-600 py-2.5 px-8 text-center font-medium text-primary-600 hover:bg-opacity-90">
+                  Cancel
                 </button>
-                <button className="flex items-center justify-center rounded bg-primary-600 py-2.5 px-8 text-center font-medium text-white hover:bg-opacity-90">
-                  Approve Booking
+                <button onClick={() =>openBookingModal("Approved")} className="flex items-center justify-center rounded bg-primary-600 py-2.5 px-8 text-center font-medium text-white hover:bg-opacity-90">
+                  Approve
                 </button>
               </div>
             </div>
@@ -169,6 +202,18 @@ const ViewBookingOne = (props: Props) => {
         </div>
       </div>
     </div>
+
+    <Modal
+        showModal={openModal}
+        setShowModal={setOpenModal}
+        title={`${status === "Approved" ? "Approve" : status === "Cancelled" ? "Cancel" : "Pend" } Booking`}
+        type={`${status === "Approved" ? "success" : "error"}`}
+        body={ <p>Are you sure you want to {status === "Approved" ? "approve" : status === "Cancelled" ? "cancel" : "pend" } this booking?</p>}
+        onSubmit={onSubmit}
+        isLoading={isLoading}
+        mode={"alert"}
+      />
+    </>
   );
 };
 

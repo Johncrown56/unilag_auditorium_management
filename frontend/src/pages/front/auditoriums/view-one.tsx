@@ -5,7 +5,7 @@ import { fetchOne, reset } from "../../../features/auditoriums/auditoriumSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AuditoriumResponse } from "../../../utils/interfaces";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AppDispatch } from "../../../store/store";
+import { AppDispatch, RootState } from "../../../store/store";
 import { NumericFormat } from "react-number-format";
 import auditoriumImage from "../../../assets/imgs/others/user-with-laptop.jpg"
 import Img from "../../../components/lazyLoadImage";
@@ -21,7 +21,7 @@ function classNames(...classes: any) {
 
 const FrontAuditoriumViewOne = () => {
   const [auditorium, setAuditorium] = useState<AuditoriumResponse>();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const [selectedImage, setSelectedImage] = useState("");
   const carouselContainer = useRef({});
   const dispatch = useDispatch<AppDispatch>();
@@ -29,7 +29,7 @@ const FrontAuditoriumViewOne = () => {
   let params = useParams();
   const [id] = useState(params.id);
   const { data, isLoading, isError, isSuccess, message } = useSelector(
-    (state: any) => state.auditorium
+    (state: RootState) => state.auditorium
   );
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const FrontAuditoriumViewOne = () => {
   };
 
   const goToAuditoriumPage = () => {
-    navigate(user ? "/auditorium/create" : "/login");
+    navigate(user ? "/bookings/create" : "/login");
   }
 
   // Duplicate each item in the array

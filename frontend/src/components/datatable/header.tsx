@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { HiChevronDown, HiPlus, HiTrash } from "react-icons/hi2";
 import { FaAngleDown, FaFilter } from "react-icons/fa6";
@@ -6,34 +5,32 @@ import { paymentStatus } from "../../utils/constant";
 
 type Props = {
   searchValue: string;
-  onChangeSearchValue: (value: string) => void;
   filterOpen: boolean;
-  toggleFilter: () => void;
   filteredStatus: string;
-  filterStatus: (value: string) => void;
-  checkAll: any;
-  //loading: boolean,
-  paginateData: any;
+  title: string;
+  showFilter: boolean;
+  createButton?:() => void;
+  onChangeSearchValue: (value: string) => void;
+  toggleFilter: () => void;
+  filterByStatus: (value: string) => void;
 };
 
 const DatatableHeader = (props: Props) => {
   const {
     searchValue,
+    filteredStatus,
+    filterOpen,
+    title,
+    showFilter,
     onChangeSearchValue,
     toggleFilter,
-    filteredStatus,
-    filterStatus,
-    // onClick,
-    // addButton,
-    checkAll,
-    //loading = false,
-    paginateData = null,
-    filterOpen,
+    createButton,
+    filterByStatus
   } = props;
   return (
     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
       <div>
-        <h3 className="font-medium">All Bookings</h3>
+        <h3 className="font-medium">{`All ${title}s`}</h3>
       </div>
       <div className="w-full md:w-1/2">
         <form className="flex items-center">
@@ -70,17 +67,18 @@ const DatatableHeader = (props: Props) => {
         </form>
       </div>
       <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-        <Link
-          to={"/bookings/create"}
+        <button
+          onClick={createButton}
           className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <HiPlus className="h-5 w-5 mr-2" />
-          Create Booking
-        </Link>
+          Create {title}
+        </button>
+        {showFilter && (
         <div className="relative mb-50 inline-block">
           <button
             onClick={toggleFilter}
-            className="inline-flex items-center gap-2.5 rounded-md bg-white py-2 px-4 font-medium text-dark min-w-36 justify-between hover:bg-opacity-95 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            className="inline-flex items-center gap-2.5 bg-white py-2 px-4 font-medium text-dark min-w-36 justify-between hover:bg-opacity-95 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           >
             <span> {filteredStatus ? filteredStatus : "Filter Status"} </span>
             <FaAngleDown
@@ -101,7 +99,7 @@ const DatatableHeader = (props: Props) => {
                     className={`${
                       filteredStatus === item ? "font-bold" : "font-medium"
                     } flex py-2 px-5 hover:bg-whiter hover:text-primary-500 dark:hover:bg-meta-4`}
-                    onClick={() => filterStatus(item)}
+                    onClick={() => filterByStatus(item)} 
                   >
                     {item}
                   </button>
@@ -110,9 +108,10 @@ const DatatableHeader = (props: Props) => {
             </ul>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
-};
+}; 
 
 export default DatatableHeader;
