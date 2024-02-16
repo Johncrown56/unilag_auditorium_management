@@ -36,8 +36,8 @@ const create = asyncHandler(async (req, res) => {
 
   // check if auditorium already exist
   const checkAuditorium = await executeQuery(
-    "SELECT `name` FROM `auditorium` WHERE name = ?",
-    [name]
+    "SELECT `name` FROM `auditoriums` WHERE name = ?",
+    [name] 
   );
   if (checkAuditorium.length > 0) {
     res
@@ -236,7 +236,7 @@ const fetch = asyncHandler(async (req, res) => {
       const newImages = images.map((image, index) => {
         return {
           sn: index + 1,
-          fileName: `http://localhost:${process.env.PORT}/uploads/${image.fileName}`,
+          fileName: `${process.env.SERVER_URL}${process.env.PORT}/uploads/${image.fileName}`,
           id: image.id,
           audID: image.audID,
         };
@@ -294,7 +294,7 @@ const fetchOne = asyncHandler(async (req, res) => {
       const newImages = images.map((image, index) => {
         return {
           sn: index + 1,
-          fileName: `http://localhost:${process.env.PORT}/src/controllers/uploads/${image.fileName}`,
+          fileName: `${process.env.SERVER_URL}${process.env.PORT}/uploads/${image.fileName}`,
           id: image.id,
           audID: image.audID,
         };

@@ -15,9 +15,18 @@ const isEmailExist = async (email) => {
 };
 
 const isUserExist = async (email, phone, userCategoryId) => {
+  let query;
+  let values;
+  if (userCategoryId === "") {
+    query = "SELECT * FROM users WHERE email = ? OR phone = ? ";
+    values = [email, phone]
+  } else {
+    query = "SELECT * FROM users WHERE email = ? OR phone = ? OR userCategoryId = ?"
+    values = [email, phone, userCategoryId]
+  }
   const result = await executeQuery(
-    "SELECT * FROM users WHERE email = ? OR phone = ? OR userCategoryId = ?",
-    [email, phone, userCategoryId]
+    query,
+    values
   );
   return result.length > 0 ? true : false;
 };
@@ -278,7 +287,7 @@ const updateUser = asyncHandler(async (req, res) => {
     } else {
       res.status(400).json({ success: false, message: "User not found" });
     }
-  } catch (error) {}
+  } catch (error) { }
 });
 
 const logoutUser = asyncHandler(async (req, res) => {

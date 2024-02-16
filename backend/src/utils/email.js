@@ -81,7 +81,7 @@ const sendEmail = async (props) => {
       bcc: process.env.EMAIL_BCC,
       replyTo: replyTo ? replyTo : undefined,
       subject: emailSubject,
-      text: process.env.EMAILTEXT,
+      // text: process.env.EMAILTEXT,
       template: template,
       context: {
         year: new Date().getFullYear(),

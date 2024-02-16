@@ -1,5 +1,6 @@
 const expressAsyncHandler = require("express-async-handler");
 const { dateTime } = require("../utils/functions");
+const { executeQuery } = require("../config/connection");
 
 const create = expressAsyncHandler(async (req, res) => {
   const { Amount, TransactionID, Status, BookingID, Remarks } = req.body;
@@ -12,7 +13,7 @@ const create = expressAsyncHandler(async (req, res) => {
   const dateCreated = dateTime();
   try {
     const query =
-      "INSERT INTO `payment` (`Amount`, `TransactionID`, `Status`, `BookingID`, `UserID`, `Remarks`, `DateCreated`) VALUES  (?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO `payment` (`amount`, `transactionID`, `status`, `platform`, `bookingID`, `userID`, `remarks`, `dateCreated`) VALUES  (?, ?, ?, ?, ?, ?, ?,?)";
     const result = await executeQuery(query, [
       Amount,
       TransactionID,
@@ -40,9 +41,12 @@ const create = expressAsyncHandler(async (req, res) => {
 });
 
 const fetch = expressAsyncHandler(async (req, res) => {
+  const userId = req.user.userId;
+  const role = req.user.role;
   try {
-    const result = await executeQuery("SELECT * FROM `payment` ", []);
-
+    const query = role === "admin" ? "SELECT * FROM `payment` " : "SELECT * FROM `payment` where userID = ?"
+    const values = role === "admin" ? [] : [userId]
+    const result = await executeQuery(query, values);
     if (result) {
       res.status(200).json({
         success: false,
@@ -64,7 +68,7 @@ const fetchOne = expressAsyncHandler(async (req, res) => {
   const id = req.params.id;
   try {
     const result = await executeQuery(
-      "SELECT * FROM `payment` WHERE TransactionID = ? ",
+      "SELECT * FROM `payment` WHERE transactionID = ? ",
       [id]
     );
     if (result) {

@@ -28,7 +28,6 @@ const generateUniqueRandomNumber1 = () => {
 const generateUniqueRandomNumber = () => {
   let lastNumber = 0;
 
-  return () => {
     const timestamp = new Date().getTime(); // Get current timestamp
     let randomSuffix;
 
@@ -38,8 +37,7 @@ const generateUniqueRandomNumber = () => {
 
     lastNumber = randomSuffix; // Update lastNumber with the current randomSuffix
     const uniqueRandomNumber = `${timestamp}${randomSuffix}`.slice(0, 10); // Combine timestamp and random number, then take the first 10 digits
-    return uniqueRandomNumber;
-  };
+    return uniqueRandomNumber;  
 };
 
 const createFolderIfNotExists = (folderPath) => {

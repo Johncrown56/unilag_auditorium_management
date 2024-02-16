@@ -2,25 +2,46 @@ const asyncHandler = require("express-async-handler");
 const { executeQuery } = require("../config/connection");
 const { dateTime } = require("../utils/functions");
 
+const validateId = async (id) => {
+  const check = await executeQuery("SELECT * FROM features WHERE id = ? ", [
+    id,
+  ]);
+  return check.length > 0 ? true : false;
+}
+
+const validateDuplicate = async (name) => {
+  const check = await executeQuery("SELECT * FROM features WHERE name = ? ", [
+    name,
+  ]);
+  return check.length === 0 ? true : false;
+}
+
 const create = asyncHandler(async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
   const userId = req.user.userId;
-  if (!name) {
+  // validate if 
+  if (!name || !description) {
     res.status(400);
-    throw new Error("Please provide feature name");
+    throw new Error("Please provide feature name and description");
   }
   const dateCreated = dateTime();
   const dateUpdated = dateTime();
+  const check = await validateDuplicate(name);
+  if (!check) {
+    res.status(400);
+    throw new Error("Feature already exist");
+  }
   const query =
-    "INSERT INTO `features`(`name`, `dateCreated`, `dateUpdated`, `userID`) VALUES (?, ?, ?, ?)";
+    "INSERT INTO `features`(`name`, `description`, `dateCreated`, `dateUpdated`, `userID`) VALUES (?, ?, ?, ?, ?)";
   const save = await executeQuery(query, [
     name,
+    description,
     dateCreated,
     dateUpdated,
     userId,
   ]);
   if (save) {
-    const data = { name, dateCreated, dateUpdated };
+    const data = { name, description, dateCreated, dateUpdated };
     res.status(200).json({
       success: true,
       message: "Feature Created successfully",
@@ -32,7 +53,7 @@ const create = asyncHandler(async (req, res) => {
 });
 
 const update = asyncHandler(async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
   const id = req.params.id;
   if (!id) {
     res.status(400);
@@ -42,16 +63,14 @@ const update = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please provide feature name");
   }
-  const check = await executeQuery("SELECT * FROM features WHERE id = ? ", [
-    id,
-  ]);
-  if (check[0]) {
+  const check = await validateId(id);
+  if (check) {
     const dateUpdated = dateTime();
     const query =
-      "UPDATE `features` SET `name` = ?, `dateUpdated` = ? WHERE `id` = ? ";
-    const save = await executeQuery(query, [name, dateUpdated, id]);
+      "UPDATE `features` SET `name` = ?, `description` = ?, `dateUpdated` = ? WHERE `id` = ? ";
+    const save = await executeQuery(query, [name, description, dateUpdated, id]);
     if (save) {
-      const data = { id, name, dateUpdated };
+      const data = { id, name, description, dateUpdated };
       res.status(200).json({
         success: true,
         message: "Feature Updated successfully",
@@ -73,27 +92,26 @@ const remove = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please provide feature id");
   }
-  const check = await executeQuery("SELECT * FROM features WHERE id = ? ", [
-    id,
-  ]);
-  if (check[0]) {
-    const query = "DELETE FROM `features` WHERE `id` = ? ";
-    const deleteFeature = await executeQuery(query, [id]);
-    if (deleteFeature) {
-      res.status(200).json({
-        success: true,
-        message: "Feature deleted successfully",
-      });
-    } else {
-      res
-        .status(400)
-        .json({ success: false, message: "Feature could not deleted" });
-    }
+  const check = await validateId(id);
+  if (!check) {
+    res
+      .status(400)
+    throw new Error("Feature Id does not exist");
+  }
+
+  const query = "DELETE FROM `features` WHERE `id` = ? ";
+  const deleteFeature = await executeQuery(query, [id]);
+  if (deleteFeature) {
+    res.status(200).json({
+      success: true,
+      message: "Feature deleted successfully",
+    });
   } else {
     res
       .status(400)
-      .json({ success: false, message: "Feature Id does not exist" });
+      .json({ success: false, message: "Feature could not deleted" });
   }
+
 });
 
 const fetch = asyncHandler(async (req, res) => {

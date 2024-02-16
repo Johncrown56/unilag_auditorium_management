@@ -1,0 +1,14 @@
+error: [2024-02-12T13:03:03.488Z] Error: user is not defined {"timestamp":"2024-02-12 14:03:03"}
+error: [2024-02-12T13:05:13.704Z] Error: data is not defined {"timestamp":"2024-02-12 14:05:13"}
+error: [2024-02-12T15:47:19.994Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 16:47:19"}
+error: [2024-02-12T15:49:17.214Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 16:49:17"}
+error: [2024-02-12T16:15:32.843Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:15:32"}
+error: [2024-02-12T16:18:43.258Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:18:43"}
+error: [2024-02-12T16:19:54.142Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:19:54"}
+error: [2024-02-12T16:22:25.011Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:22:25"}
+error: [2024-02-12T16:35:47.048Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:35:47"}
+error: [2024-02-12T16:35:59.938Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:35:59"}
+error: [2024-02-12T16:51:56.992Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:51:56"}
+error: [2024-02-12T16:59:01.929Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 17:59:01"}
+error: [2024-02-12T17:46:16.569Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 18:46:16"}
+error: [2024-02-12T17:47:22.722Z] Error: Bind parameters must not contain function(s). To pass the body of a function as a string call .toString() first {"timestamp":"2024-02-12 18:47:22"}

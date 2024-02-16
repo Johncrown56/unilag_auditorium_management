@@ -73,6 +73,7 @@ const create = asyncHandler(async (req, res) => {
     startTime,
     endDate,
     endTime,
+    "Pending",
     approved,
     paymentStatus,
     userId,
@@ -96,15 +97,16 @@ const create = asyncHandler(async (req, res) => {
         .json({ success: false, message: "Auditorium Id does not exist" });
     } else {
       const query =
-        "INSERT INTO `bookings` ( `bookingId`, `audId`, `purpose`, `remarks`, `type`, `startDate`, `startTime`, `endDate`, `endTime`, `approved`, `paymentStatus`, `userId`, `dateCreated`, `dateUpdated`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+        "INSERT INTO `bookings` ( `bookingId`, `audId`, `purpose`, `remarks`, `type`, `startDate`, `startTime`, `endDate`, `endTime`, `status`, `approved`, `paymentStatus`, `userId`, `dateCreated`, `dateUpdated`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
       const save = await executeQuery(query, values);
 
       const sql =
-        "INSERT INTO `payment` (`Amount`, `TransactionID`, `Status`, `BookingID`, `UserID`, `Remarks`, `DateCreated`) VALUES (?,?,?,?,?,?,?)";
+        "INSERT INTO `payment` (`amount`, `transactionID`, `status`, `platform`, `bookingID`, `userID`, `remarks`, `dateCreated`) VALUES (?,?,?,?,?,?,?,?)";
       const savePayment = await executeQuery(sql, [
         totalAmount,
         transactionId,
         paymentStatus,
+        paymentPlatform,
         bookingId,
         userId,
         paymentRemarks || "",
@@ -112,7 +114,7 @@ const create = asyncHandler(async (req, res) => {
       ]);
 
       const sql2 =
-        "INSERT INTO `payment_breakdown`(`TransactionID`, `cautionFee`, `cleaningCharges`, `vat`, `eventDays`) VALUES (?,?,?,?,?)";
+        "INSERT INTO `payment_breakdown`(`transactionID`, `cautionFee`, `cleaningCharges`, `vat`, `eventDays`) VALUES (?,?,?,?,?)";
       const savePaymentBreakdown = await executeQuery(sql2, [
         transactionId,
         cautionFee,
@@ -185,6 +187,12 @@ const create = asyncHandler(async (req, res) => {
           base64Images,
         };
 
+        const message = `We are pleased to notify you that your auditorium booking with id ${bookingId} is under review. We will send a confirmation email once your booking is approved.`;
+        const title = `Your Booking Is Under Review`;
+        const adminMessage = `A new booking request has been made. Kindly approve or disapprove on the admin portal`;
+        const adminTitle = `New Booking Alert`;
+        const colour = "#6576ff";
+        const cid = "cid:kyc-progress";
         const props = {
           emailSubject: "Your auditorium booking is received",
           sendTo: user.email,
@@ -192,7 +200,7 @@ const create = asyncHandler(async (req, res) => {
             name: process.env.APP_NAME,
             address: process.env.GMAIL_APP_USERNAME,
           },
-          template: "pendingbooking",
+          template: "booking",
           attachIcons: false,
           attachments: [
             {
@@ -201,9 +209,10 @@ const create = asyncHandler(async (req, res) => {
               cid: "kyc-progress",
             },
           ],
-          context: { ...req.body, ...user },
+          context: { ...req.body, ...user, message, title, colour, cid },
         };
 
+        
         const adminProps = {
           emailSubject: "New Booking request is received",
           sendTo: process.env.ADMINEMAIL,
@@ -213,7 +222,7 @@ const create = asyncHandler(async (req, res) => {
           },
           template: "adminbookingnotification",
           attachIcons: false,
-          context: req.body,
+          context: {...req.body, adminMessage, adminTitle},
         };
 
         await sendAdminEmail(adminProps).then((response) => {
@@ -254,15 +263,15 @@ const create = asyncHandler(async (req, res) => {
 });
 
 const fetch = asyncHandler(async (req, res) => {
-  const { type } = req.query;
   const userId = req.user.userId;
+  const role = req.user.role;
   try {
     const allBookings =
-      type != undefined && type === "user"
-        ? await executeQuery("SELECT * FROM `bookings` WHERE userId = ? ", [
+      role === "admin"
+        ? await executeQuery("SELECT * FROM `bookings` ", [])
+        : await executeQuery("SELECT * FROM `bookings` WHERE userId = ? ", [
             userId,
-          ])
-        : await executeQuery("SELECT * FROM `bookings` ", []);
+          ]);
     const promises = allBookings.map(async (bookings) => {
       const features = await executeQuery(
         "SELECT booking_features.id AS bookingFeatureId, booking_features.featureId AS featureId, booking_features.bookingId, features.name FROM booking_features JOIN features ON booking_features.featureId = features.id WHERE booking_features.bookingId = ? ",
@@ -345,7 +354,7 @@ const update = asyncHandler(async (req, res) => {
 
     const dateUpdated = dateTime();
 
-    const values = [purpose, remarks, type, status, dateUpdated];
+    const values = [purpose, remarks, type, status, dateUpdated, bookingId];
 
     if (bookings.length > 0) {
       const query =
@@ -523,46 +532,111 @@ const checkAvailability = asyncHandler(async (req, res) => {
 });
 
 const changeStatus = asyncHandler(async (req, res) => {
-  const userId = req.user.userId;
+  const {user } = req;
+  const {role} = user;
   const bookingId = req.params.id;
   const { status } = req.body;
-  try {
-    const bookings = await executeQuery(
-      "SELECT * FROM `bookings` WHERE bookingId = ?",
-      [bookingId]
-    );
-
-    const dateUpdated = dateTime();
-
-    const values = [status, dateUpdated];
-
-    if (bookings.length > 0) {
-      const query =
-        "UPDATE `bookings` SET `status` = ?, `dateUpdated` = ? WHERE `bookingId` = ?";
-      const update = await executeQuery(query, values);
-      const result = await executeQuery(
-        "SELECT * FROM `bookings` WHERE bookingId = ?",
+  if (role === "admin") {
+    try {
+      const bookings = await executeQuery(
+        "SELECT * FROM `bookings` WHERE bookingId = ? ",
         [bookingId]
       );
-      if (update) {
-        res.status(200).json({
-          success: true,
-          message: "Booking fetched successfully",
-          data: result,
-        });
+      const dateUpdated = dateTime();
+      const values = [status, dateUpdated, bookingId];
+      if (bookings.length > 0) {
+        const query =
+          "UPDATE `bookings` SET `status` = ?, `dateUpdated` = ? WHERE `bookingId` = ?";
+        const update = await executeQuery(query, values);
+        const result = await executeQuery(
+          "SELECT * FROM `bookings` WHERE bookingId = ?",
+          [bookingId]
+        );
+       const data = result;        
+        if (update) {
+          // res.status(200).json({
+          //   success: true,
+          //   message: `Booking ${status.toLowerCase()} successfully`,
+          //   data: result,
+          // });
+          const message = `We are pleased to notify you that your auditorium booking with ID #${bookingId} is ${status.toLowerCase()}. Kindly go to you portal to view accordingly.`;
+          const title = `Your Booking ID #${bookingId} is ${status}`;
+          const adminMessage = `You ${status.toLowerCase()} a booking ID #${bookingId}. Kindly change the status of the booking if it's done in error.`;
+          const adminTitle = `Booking ID #${bookingId} ${status} by You`;
+          const colour = status === "Approved" ? "#1ee0ac": status === "Cancelled" ? "#f4bd0e": "#6576ff";
+          const cid = status === "Approved" ? "cid:kyc-success": status === "Cancelled" ? "cid:kyc-pending": "cid:kyc-progress";
+          const props = {
+            emailSubject: `Your Auditorium booking is ${status}`,
+            sendTo: user.email,
+            sentFrom: {
+              name: process.env.APP_NAME,
+              address: process.env.GMAIL_APP_USERNAME,
+            },
+            template: "booking",
+            attachIcons: false,
+            attachments: [
+              {
+                filename: status === "Approved" ? "kyc-success.png": status === "Cancelled" ? "kyc-pending.png": "kyc-progress.png",
+                path: status === "Approved" ? __dirname + "/../assets/email/kyc-success.png" : status === "Cancelled" ? __dirname + "/../assets/email/kyc-pending.png" : __dirname + "/../assets/email/kyc-progress.png",
+                cid: status === "Approved" ? "kyc-success": status === "Cancelled" ? "kyc-pending": "kyc-progress",
+              },
+            ],
+            context: { ...req.body, ...user, message, title, colour, cid },
+          };
+  
+          const adminProps = {
+            emailSubject: `You ${status} booking ID #${bookingId}`,
+            sendTo: process.env.ADMINEMAIL,
+            sentFrom: {
+              name: process.env.APP_NAME,
+              address: process.env.GMAIL_APP_USERNAME,
+            },
+            template: "adminbookingnotification",
+            attachIcons: false,
+            context: {...req.body, adminMessage, adminTitle},
+          };
+  
+          await sendAdminEmail(adminProps).then((response) => {
+            // console.log(response);
+          });
+  
+          await sendEmail(props)
+            .then((response) => {
+              res.status(200).json({
+                success: true,
+                message: `Booking ${status.toLowerCase()} successfully`,
+                additionalMessage: "Message sent to your email successfully",
+                data,
+                email: response,
+              });
+            })
+            .catch((error) => {
+              // When email is not sent but status is changed
+              res.status(200).json({
+                success: true,
+                data,
+                message: `Booking ${status.toLowerCase()} successfully`,
+                additionalMessage: "There is an issue sending email to user",
+                email: error,
+              });
+            });
+
+        } else {
+          res.status(400).json({
+            success: false,
+            message: "Error: Booking can not be updated",
+          });
+        }
       } else {
-        res.status(400).json({
-          success: false,
-          message: "Error: Booking can not be updated",
-        });
+        res.status(404).json({ error: "Booking ID does not exist" });
       }
-    } else {
-      res.status(404).json({ error: "Booking ID does not exist" });
+    } catch (error) {
+      console.log(error);
+      logger.error(`[${new Date().toISOString()}] Error: ${error.message}`);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-  } catch (error) {
-    console.log(error);
-    logger.error(`[${new Date().toISOString()}] Error: ${error.message}`);
-    res.status(500).json({ error: "Internal Server Error" });
+  } else {
+    throw new Error("You don't have permission to update status");
   }
 });
 
