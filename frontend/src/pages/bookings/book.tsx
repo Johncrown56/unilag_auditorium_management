@@ -643,13 +643,6 @@ const BookAuditorium = (props: Props) => {
               </div>
             </div>
           </div>
-          {/* <SuccessModal
-            open={open}
-            setOpen={setOpen}
-            resetParams={resetParams}
-            params={params}
-            modalContent={modalContent}
-          /> */}
           <Modal
             showModal={open}
             setShowModal={setOpen}

@@ -1,8 +1,11 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ChangePassword from "../../components/changePassword";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
+import { reset, update } from "../../features/profile/profileSlice";
+import { toast } from "react-toastify";
+import ButtonLoader from "../../components/buttonLoader";
 
 const Profile = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -14,12 +17,15 @@ const Profile = () => {
     userCategory,
     userCategoryId,
     role,
+    userId,
   } = user;
   const initialValues = {
+    userId,
     email,
     firstName,
     lastName,
     phone,
+    role,
     userCategory,
     userCategoryId,
   };
@@ -30,6 +36,14 @@ const Profile = () => {
   });
 
   const { mount, params, disabled } = formState;
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    data: submittedData,
+    isLoading,
+    isError,
+    isSuccess,
+    message: msg,
+  } = useSelector((state: RootState) => state.profile);
 
   useEffect(() => {
     if (params !== initialValues) {
@@ -43,6 +57,7 @@ const Profile = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(params);
+    dispatch(update(params));
   };
 
   const customSetState = (name: string, value: string) => {
@@ -56,6 +71,18 @@ const Profile = () => {
     const { name, value } = e.target;
     customSetState(name, value);
   };
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(msg);
+    }
+
+    if (isSuccess) {
+      msg !== "" && toast.success(msg);
+    }
+
+    dispatch(reset());
+  }, [submittedData, isError, isSuccess, msg, dispatch]);
 
   return (
     <>
@@ -277,11 +304,16 @@ const Profile = () => {
                     </button>
                     <button
                       type="submit"
+                      disabled={disabled}
                       className={`${
-                        disabled ? "disabled" : ""
+                        isLoading || disabled ? "disabled" : " "
                       } protectedSubmitButton`}
                     >
-                      Save
+                      <ButtonLoader
+                        isLoading={isLoading}
+                        text="Save"
+                        loadingText="Loading"
+                      />
                     </button>
                   </div>
                 </form>
@@ -289,7 +321,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="col-span-5 xl:col-span-2">
-            <ChangePassword />
+            <ChangePassword isLoading={isLoading} dispatch={dispatch}/>
           </div>
         </div>
       </div>
@@ -298,4 +330,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

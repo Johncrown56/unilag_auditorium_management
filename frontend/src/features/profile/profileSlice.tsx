@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import profileService from "./profileService";
+import { IChangePassword, IUser } from "../../utils/interfaces";
 
 const initialState = {
   isError: false,
@@ -28,9 +29,27 @@ export const fetch = createAsyncThunk("profile/fetch", async (_, thunkAPI) => {
 // update Profile
 export const update = createAsyncThunk(
   "profile/update",
-  async (data, thunkAPI) => {
+  async (data: IUser, thunkAPI) => {
     try {
       const res = await profileService.update(data);
+      return res;
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "profile/changePassword",
+  async (data: IChangePassword, thunkAPI) => {
+    try {
+      const res = await profileService.changePassword(data);
       return res;
     } catch (error: any) {
       const message =
@@ -84,6 +103,24 @@ export const profileSlice = createSlice({
         state.response = null;
       })
       .addCase(update.rejected, (state, action) => {
+        console.log({action})
+        state.isLoading = false;
+        state.isError = true;
+        state.message = String(action.payload);
+        state.data = null;
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = action.payload.success || true;
+        state.message = action.payload.message;
+        state.data = action.payload.data;
+        state.response = null;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        console.log({action})
         state.isLoading = false;
         state.isError = true;
         state.message = String(action.payload);

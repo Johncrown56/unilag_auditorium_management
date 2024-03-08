@@ -17,10 +17,10 @@ const validateDuplicate = async (name) => {
 }
 
 const create = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, amount } = req.body;
   const userId = req.user.userId;
   // validate if 
-  if (!name || !description) {
+  if (!name || !description || !amount) {
     res.status(400);
     throw new Error("Please provide feature name and description");
   }
@@ -32,16 +32,17 @@ const create = asyncHandler(async (req, res) => {
     throw new Error("Feature already exist");
   }
   const query =
-    "INSERT INTO `features`(`name`, `description`, `dateCreated`, `dateUpdated`, `userID`) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO `features`(`name`, `amount`, `description`, `dateCreated`, `dateUpdated`, `userID`) VALUES (?, ?, ?, ?, ?, ?)";
   const save = await executeQuery(query, [
     name,
+    amount,
     description,
     dateCreated,
     dateUpdated,
     userId,
   ]);
   if (save) {
-    const data = { name, description, dateCreated, dateUpdated };
+    const data = { name, amount, description, dateCreated, dateUpdated };
     res.status(200).json({
       success: true,
       message: "Feature Created successfully",
@@ -53,7 +54,7 @@ const create = asyncHandler(async (req, res) => {
 });
 
 const update = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, amount } = req.body;
   const id = req.params.id;
   if (!id) {
     res.status(400);
@@ -67,10 +68,10 @@ const update = asyncHandler(async (req, res) => {
   if (check) {
     const dateUpdated = dateTime();
     const query =
-      "UPDATE `features` SET `name` = ?, `description` = ?, `dateUpdated` = ? WHERE `id` = ? ";
-    const save = await executeQuery(query, [name, description, dateUpdated, id]);
+      "UPDATE `features` SET `name` = ?, `amount` = ?, `description` = ?, `dateUpdated` = ? WHERE `id` = ? ";
+    const save = await executeQuery(query, [name, amount, description, dateUpdated, id]);
     if (save) {
-      const data = { id, name, description, dateUpdated };
+      const data = { id, name, amount, description, dateUpdated };
       res.status(200).json({
         success: true,
         message: "Feature Updated successfully",
@@ -115,7 +116,7 @@ const remove = asyncHandler(async (req, res) => {
 });
 
 const fetch = asyncHandler(async (req, res) => {
-  const check = await executeQuery("SELECT * FROM features ", []);
+  const check = await executeQuery("SELECT * FROM features ORDER BY id DESC", []);
   if (check) {
     res.status(200).json({
       success: true,

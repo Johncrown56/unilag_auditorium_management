@@ -47,6 +47,14 @@ import Faq from "./pages/faq";
 import EventGallery from "./pages/event-gallery";
 import Features from "./pages/features";
 import Categories from "./pages/categories";
+import ResetPassword from "./pages/auth/ResetPassword";
+import Users from "./pages/users";
+import Staffs from "./pages/users/staffs";
+import User from "./pages/users/user";
+import Admin from "./pages/users/admin";
+import Students from "./pages/users/students";
+import Individuals from "./pages/users/individuals";
+import Organizations from "./pages/users/organizations";
 
 interface PublicRouteProps {
   path: string;
@@ -91,6 +99,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/event-gallery" element={<EventGallery />} />
@@ -124,6 +133,12 @@ function App() {
               <Route path="/referrals" element={<Referrals />} /> 
               <Route path="/features" element={<Features />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/staffs" element={<Staffs />} />
+              <Route path="/users" element={<User />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/organizations" element={<Organizations />} />
+              <Route path="/individuals" element={<Individuals />} />
+              <Route path="/students" element={<Students />} />
 
             </Route>
             {/* </IdleTimerProvider> */}

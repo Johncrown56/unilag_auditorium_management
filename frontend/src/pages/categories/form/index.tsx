@@ -15,7 +15,7 @@ type Props = {
     setFormSubmitted: (value: boolean) => void;
 }
 interface IParams extends IFeat {
-    [key: string]: string | undefined;
+    [key: string]: string | number | undefined;
 }
 
 const CategoryForm = (props: Props) => {

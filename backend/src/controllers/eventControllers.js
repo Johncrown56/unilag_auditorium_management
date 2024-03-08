@@ -58,7 +58,7 @@ const createEventCategories = asyncHandler(async (req, res) => {
 
 const fetchEventCategories = asyncHandler(async (req, res) => {
   try {
-    const check = await executeQuery("SELECT * FROM event_categories ", []);
+    const check = await executeQuery("SELECT * FROM event_categories ORDER BY id DESC", []);
     if (check) {
       res.status(200).json({
         success: true,

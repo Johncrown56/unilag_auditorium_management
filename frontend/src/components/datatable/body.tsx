@@ -24,7 +24,7 @@ const DatatableBody = (props: Props) => {
           <tr key={rowIndex}>
             <>
               {Array.isArray(columns) && columns.map((column, colIndex) => (              
-                  <TableItem key={colIndex} title={title} colIndex={colIndex} column={column} item={item} handleAction={handleAction} idColumnName={idColumnName}
+                  <TableItem key={colIndex} rowIndex={rowIndex} title={title} colIndex={colIndex} column={column} item={item} handleAction={handleAction} idColumnName={idColumnName}
                     openDropdown={openDropdown} viewButton={viewButton} editButton={editButton} cancelButton={cancelButton} setOpenDropdown={setOpenDropdown} />
                 
               ))}
@@ -38,7 +38,7 @@ const DatatableBody = (props: Props) => {
 export default DatatableBody;
 
 const TableItem = (props: any) => {
-  const { title, colIndex, column, item, handleAction, idColumnName, openDropdown, viewButton, editButton, cancelButton, setOpenDropdown } = props;
+  const { title, rowIndex, colIndex, column, item, handleAction, idColumnName, openDropdown, viewButton, editButton, cancelButton, setOpenDropdown } = props;
 
   const table = [
     {
@@ -63,22 +63,26 @@ const TableItem = (props: any) => {
 
   return (
     <>
-      {colIndex === 0 ? (
+      {column.mode === "count" ? (
+        <td className="px-4 py-3">
+          {`${rowIndex + 1}.`}
+        </td>
+        ) : colIndex === 0 ? (
         <th
           scope="row"
           className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
         >
           {column.name.includes('.') ? item[column.name.split('.')[0]][column.name.split('.')[1]] : item[column.name]}
         </th>
-      ) : column.mode === "boolean" ? (
+      ) :  column.mode === "boolean" ? (
         <td className="px-4 py-3">
           <p
-            className={`${item[column.name] == 1
+            className={`${Boolean(item[column.name]) == true
               ? "bg-success-600 text-success-500"
               : "bg-danger-600 text-danger-600"
               } inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium`}
           >
-            {item[column.name] == 1 ? "True" : "False"}
+            {Boolean(item[column.name]) == true ? "True" : "False"}
           </p>
         </td>
       ) : column.mode === "badge" ? (
@@ -95,7 +99,7 @@ const TableItem = (props: any) => {
             {item[column.name]}
           </div>
         </td>
-      )
+      ) 
         : column.name === "actions" ? (
           <td className="px-4 py-3 items-center justify-end">
             <button
@@ -140,8 +144,7 @@ const TableItem = (props: any) => {
               </ul> 
             </div>
           </td>
-        )
-          : (
+        ) : (
             <td key={colIndex} className="px-4 py-3">
               {/* Handle formatting for specific columns */}
               {column.mode === 'date' ? moment(item[column.name]).format("DD MMM, YYYY. HH:mmA")

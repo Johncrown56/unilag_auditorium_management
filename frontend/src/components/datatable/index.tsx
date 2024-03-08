@@ -260,8 +260,8 @@ const Datatable = (props: Props) => {
 
   return (
     <div className="">
-      <section className="p-1 sm:p-3">
-        <div className="mx-auto max-w-screen-xl px-4 lg:px-3">
+      <section className="p-1 lg:p-0 sm:p-3">
+        <div className="mx-auto max-w-screen-xl px-4 lg:px-0">
           <div className="bg-white dark:bg-gray-800 border-t relative shadow-lg sm:rounded-lg overflow-hidden">
             <DatatableHeader
               filterOpen={filterOpen!}

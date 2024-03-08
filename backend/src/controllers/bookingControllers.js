@@ -268,8 +268,8 @@ const fetch = asyncHandler(async (req, res) => {
   try {
     const allBookings =
       role === "admin"
-        ? await executeQuery("SELECT * FROM `bookings` ", [])
-        : await executeQuery("SELECT * FROM `bookings` WHERE userId = ? ", [
+        ? await executeQuery("SELECT * FROM `bookings` ORDER BY id DESC ", [])
+        : await executeQuery("SELECT * FROM `bookings` WHERE userId = ? ORDER BY id DESC ", [
             userId,
           ]);
     const promises = allBookings.map(async (bookings) => {
@@ -288,6 +288,15 @@ const fetch = asyncHandler(async (req, res) => {
         [bookings.audId]
       );
 
+      const newImages = images.map((image, index) => {
+        return {
+          sn: index + 1,
+          fileName: `${process.env.SERVER_URL}${process.env.PORT}/uploads/${image.fileName}`,
+          id: image.id,
+          audID: image.audID,
+        };
+      });
+
       const receipts = await executeQuery(
         "SELECT * FROM `receipts` WHERE bookingId = ? ",
         [bookings.bookingId]
@@ -303,6 +312,10 @@ const fetch = asyncHandler(async (req, res) => {
         [bookings.userId]
       );
 
+      const payment = await executeQuery("SELECT * FROM payment JOIN payment_breakdown ON payment.transactionID = payment_breakdown.transactionID WHERE payment.bookingID = ?" ,
+        [bookings.bookingId]
+      );
+
       const user = (({
         password,
         id,
@@ -316,9 +329,10 @@ const fetch = asyncHandler(async (req, res) => {
         ...bookings,
         category: category[0],
         name: auditorium[0].name,
-        images,
+        images: newImages,
         receipts,
         features,
+        payment: payment.length > 0 ? payment[0] : payment,
         user,
       };
     });
@@ -411,6 +425,15 @@ const fetchOne = asyncHandler(async (req, res) => {
           [bookings.audId]
         );
 
+        const newImages = images.map((image, index) => {
+          return {
+            sn: index + 1,
+            fileName: `${process.env.SERVER_URL}${process.env.PORT}/uploads/${image.fileName}`,
+            id: image.id,
+            audID: image.audID,
+          };
+        });
+
         const receipts = await executeQuery(
           "SELECT * FROM `receipts` WHERE bookingId = ? ",
           [bookings.bookingId]
@@ -426,6 +449,10 @@ const fetchOne = asyncHandler(async (req, res) => {
           [bookings.userId]
         );
 
+        const payment = await executeQuery("SELECT * FROM payment JOIN payment_breakdown ON payment.transactionID = payment_breakdown.transactionID WHERE payment.bookingID = ?" ,
+        [bookings.bookingId]
+      );
+
         const user = (({
           password,
           id,
@@ -439,10 +466,11 @@ const fetchOne = asyncHandler(async (req, res) => {
           ...bookings,
           category: category[0],
           name: auditorium[0].name,
-          images,
+          images: newImages,
           receipts,
           features,
-          user,
+          payment: payment.length > 0 ? payment[0] : payment,
+          user
         };
       });
 

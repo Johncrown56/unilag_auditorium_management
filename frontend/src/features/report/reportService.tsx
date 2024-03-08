@@ -1,11 +1,11 @@
 import endpoint from "../../utils/endpoints";
 import api from "../../utils/http";
 
-const baseUrl = endpoint.ADMIN;
+const adminBaseUrl = endpoint.ADMIN;
 
 // get user Count
 const countUser = async () => {
-  const response = await api.get(baseUrl + "/");
+  const response = await api.get(adminBaseUrl + "/count");
   return response.data;
 };
 

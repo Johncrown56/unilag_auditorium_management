@@ -14,7 +14,7 @@ export const step1ValidationSchema = yup.object({
     .string()
     .min(2, "Remarks can not be less than 2 characters")
     .max(500, "Remarks can not be more than 500 characters")
-    .required("Please enter remarks"),
+    .notRequired(),
   type: yup.string().trim().required("Please choose your event category"),
   purpose: yup
     .string()

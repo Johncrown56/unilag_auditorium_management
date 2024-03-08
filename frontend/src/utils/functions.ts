@@ -77,3 +77,37 @@ moment().clone().subtract(index, 'days').format('DD-MM')
 export const last7Days = Array.from({ length: 7 }, (_, index) =>
 moment().clone().subtract(index, 'days').format('DD-MM') 
 ).reverse();
+
+
+export const stringToColor = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let color = '#';
+  for (let i = 0; i < 3; i++) {
+    let value = (hash >> (i * 8)) & 0xFF;
+    color += ('00' + value.toString(16)).substr(-2);
+  }
+  return color;
+}
+
+export const formatCurrency = (value: number) => {
+  // Format the number as currency with Nigerian Naira (NGN) symbol
+  return '₦' + value.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+export const joinArray = (array: string[]) => {
+  return array.join(', ')
+}
+
+export const joinNames = (data: any[]) => {
+  return data.map(item => item?.name).join(', ');
+}
+
+export const capitalizeFirstLetter = (str: string)=> {
+  // Ensure the word is not empty
+  if (!str) return '';
+  // Capitalize the first letter and concatenate it with the rest of the word
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

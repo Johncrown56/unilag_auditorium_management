@@ -15,19 +15,19 @@ type Props = {
     setFormSubmitted: (value: boolean) => void;
 }
 interface IParams extends IFeat {
-    [key: string]: string | undefined;
+    [key: string]: string | number | undefined;
 }
 
 const FeatureForm = (props: Props) => {
     const { form, mode, FormName, setOpenModal, setFormSubmitted } = props;
-    const initialValue = { name: "", description: ""};
+    const initialValue = { name: "", amount: 0, description: ""};
     const [formData, setFormData] = useState<IParams>(initialValue);
     const [formErrors, setFormErrors] = useState<IParams>(initialValue);
     const [touched, setTouched] = useState<IBoolean>({name: false, description: false});
     const [disabled, setDisabled] = useState(true);
     const dispatch = useDispatch<AppDispatch>();
 
-    const { name, description } = formData;
+    const { name, amount, description } = formData;
     const { data: submittedData, isLoading, isError, isSuccess, message } = useSelector(
         (state: RootState) => state.feature
     );
@@ -57,7 +57,7 @@ const FeatureForm = (props: Props) => {
 
     useEffect(() => {
         if (form) {
-            const values = {id: form?.id, name: form?.name, description: form?.description};
+            const values = {id: form?.id, name: form?.name, amount: form?.amount, description: form?.description};
            setFormData(values)
         } else {
             setFormData(initialValue)
@@ -102,7 +102,8 @@ const FeatureForm = (props: Props) => {
         <div>
             <form onSubmit={onSubmit}>
                 <div className="grid gap-4 mb-4 grid-cols-2">
-                    <div className="col-span-2">
+
+                    <div className="col-span-2 sm:col-span-1">
                         <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{FormName} Name</label>
                         <input type="text"
                             name="name"
@@ -117,6 +118,25 @@ const FeatureForm = (props: Props) => {
                             {touched.name && formErrors.name}
                         </small>
                     </div>
+                    
+
+                    <div className="col-span-2 sm:col-span-1">
+                        <label htmlFor="amount" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{FormName} Amount</label>
+                        <input type="number"
+                            name="amount"
+                            id="amount"
+                            value={amount}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            readOnly={mode=== "View"? true : false}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            required={true} />   
+                        <small className="form-error">
+                            {touched?.amount && (formErrors?.amount || formErrors.amount! > 0)}
+                        </small>                     
+                    </div>
+                    
+                    
 
                     <div className="col-span-2">
                         <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{FormName} Description</label>

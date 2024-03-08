@@ -89,6 +89,7 @@ const sendEmail = async (props) => {
         companyName: process.env.COMPANYNAME,
         productName: process.env.PRODUCTNAME,
         customerCareLine: process.env.CUSTOMERCARELINE,
+        adminEmail: process.env.ADMINEMAIL,
         ...context,
       },
       attachments: attachIcons ? attachmentWithIcons : attachmentWithoutIcons,

@@ -20,8 +20,7 @@ const ForgotPassword = () => {
   const [formData, setFormData] = useState<IForgotPassword>(initialValue);
   const [errors, setErrors] = useState<IString>(initialValue);
   const [touched, setTouched] = useState<IBoolean>({
-    email: false,
-    password: false,
+    email: false
   });
   const [disabled, setDisabled] = useState(true);
 
@@ -78,7 +77,7 @@ const ForgotPassword = () => {
     }
     if (isSuccess && user) {
       toast.success(message);
-      navigate("/reset-password");
+      //navigate("/reset-password");
     }
     dispatch(reset());
   }, [user, isError, isSuccess, message, dispatch]);
@@ -145,7 +144,7 @@ const ForgotPassword = () => {
               </div>
               <button
                 type="submit"
-                disabled={disabled}
+                disabled={disabled || isLoading}
                 className={`${isLoading || disabled ? "disabled" : " "
                   } submitButton`}
               >

@@ -15,6 +15,7 @@ type Props = {
   mode: IModalMode;
   setShowModal: (value: boolean) => void;
   onSubmit?: () => void;
+  submitText: string;
 };
 
 const ModalContainer = (props: Props) => {
@@ -28,6 +29,7 @@ const ModalContainer = (props: Props) => {
     onSubmit,
     isLoading,
     mode,
+    submitText
   } = props;
   return (
     <div
@@ -50,6 +52,7 @@ const ModalContainer = (props: Props) => {
                 onSubmit={onSubmit}
                 isLoading={isLoading}
                 mode={mode}
+                submitText={submitText}
               />
             </div>
           </div>

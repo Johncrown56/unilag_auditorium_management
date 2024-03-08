@@ -7,10 +7,11 @@ type Props = {
   id: string;
   isLoading: boolean;
   mode: IModalMode;
+  submitText: string;
 };
 
 const ModalFooter = (props: Props) => {
-  const { id, onSubmit, setShowModal, isLoading, mode } = props;
+  const { id, onSubmit, setShowModal, isLoading, mode, submitText } = props;
   return (
     <>
     {mode === "alert" && (
@@ -31,7 +32,7 @@ const ModalFooter = (props: Props) => {
           } block w-full rounded border border-meta-1 bg-meta-1 p-3 text-center font-medium text-white transition hover:bg-opacity-90`}
           onClick={onSubmit}
         >
-          Proceed
+          {submitText}
         </button>
       </div>
     </div>

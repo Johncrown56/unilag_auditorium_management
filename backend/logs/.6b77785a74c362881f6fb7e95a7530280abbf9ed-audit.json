@@ -6,34 +6,29 @@
     "auditLog": "logs\\.6b77785a74c362881f6fb7e95a7530280abbf9ed-audit.json",
     "files": [
         {
-            "date": 1706822645448,
-            "name": "logs\\error-2024-02-01.log",
-            "hash": "512a28cf94e75a66c1073752de01069c055f62f5ab1874dc26207aeef082b843"
+            "date": 1709023932210,
+            "name": "logs\\error-2024-02-27.log",
+            "hash": "3141fbb71cbf83150083b2aceaec50ebb957e923d06e10f486dc3e50317ae6c5"
         },
         {
-            "date": 1707012073400,
-            "name": "logs\\error-2024-02-04.log",
-            "hash": "f903c68f4ac59715115d217b4bc77654dc6368fe7f233a329da7c63cc6c1c902"
+            "date": 1709396766197,
+            "name": "logs\\error-2024-03-02.log",
+            "hash": "100bf83ac83a12aba64c17b09beda39d93c2536178737d32edc0d2b44928abed"
         },
         {
-            "date": 1707557467875,
-            "name": "logs\\error-2024-02-10.log",
-            "hash": "9b4d858f047ff59448cd211ee8e15a2be40de8cc44661a42a4b73a5bd76d06a6"
+            "date": 1709475017962,
+            "name": "logs\\error-2024-03-03.log",
+            "hash": "26cae730093522905d9984dac03cfdc7135bff9b0f1b9898632a10dda13bdb78"
         },
         {
-            "date": 1707659758881,
-            "name": "logs\\error-2024-02-11.log",
-            "hash": "57eff4f624599a130a303a095328e0ed693b534e0ab8849c1a99d85866c85ba2"
+            "date": 1709540347180,
+            "name": "logs\\error-2024-03-04.log",
+            "hash": "78c01a2130e8e574aefb19d1185514049d7d3e23e7b9673ced82133b7ecb0216"
         },
         {
-            "date": 1707722384964,
-            "name": "logs\\error-2024-02-12.log",
-            "hash": "8ff0baf91f05c4adcf3c374c93f4d4990058d15e817163156276f85ab50c02c1"
-        },
-        {
-            "date": 1707799906904,
-            "name": "logs\\error-2024-02-13.log",
-            "hash": "416c35400df0f8cf789c56d72f3d48882929c4827bc6ebe136f07d781484cbc9"
+            "date": 1709640487652,
+            "name": "logs\\error-2024-03-05.log",
+            "hash": "d4c78ca1d8b8c3514c9da7e7f6133e3ea8c9c541105bc7270a1d8800dac37412"
         }
     ],
     "hashType": "sha256"

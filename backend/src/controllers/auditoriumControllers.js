@@ -223,7 +223,7 @@ const remove = asyncHandler(async (req, res) => {
 const fetch = asyncHandler(async (req, res) => {
   try {
     const auditoriumData = await executeQuery(
-      "SELECT * FROM `auditoriums` ",
+      "SELECT * FROM `auditoriums` ORDER BY id DESC ",
       []
     );
 

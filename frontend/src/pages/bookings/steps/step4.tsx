@@ -9,6 +9,7 @@ import Dropzone from "../../../components/dropzone";
 import { NumericFormat } from "react-number-format";
 import { ChangeEvent } from "react";
 import { RootState } from "../../../store/store";
+import { paymentLink } from "../../../utils/constant";
 
 interface Props extends IStepFormState {
   params: IBooking;
@@ -32,25 +33,6 @@ const Step4 = (props: Props) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { userCategory } = user;
   const { paymentStatus, paymentMethod } = params;
-
-  const paymentLink = [
-    {
-      category: "Student",
-      link: "http://students.unilag.tranzgate.com.ng/",
-    },
-    {
-      category: "Staff",
-      link: "http://staff.unilag.tranzgate.com.ng/",
-    },
-    {
-      category: "Individual",
-      link: "http://others.unilag.tranzgate.com.ng/",
-    },
-    {
-      category: "Organization",
-      link: "http://others.unilag.tranzgate.com.ng/",
-    },
-  ];
 
   const transferDetails = [
     {

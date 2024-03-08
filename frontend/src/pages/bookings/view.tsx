@@ -140,7 +140,7 @@ const ViewBookings = () => {
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="View Bookings" />
         <Datatable
-          list={bookings?.slice()?.reverse()}
+          list={bookings}
           columns={bookingColumns}
           idColumnName={"bookingId"}
           title={"Booking"}

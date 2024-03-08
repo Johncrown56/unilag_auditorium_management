@@ -21,6 +21,11 @@ const attachmentIcons = [
   },
 ];
 
+const COOKIES_VALIDITY_PERIOD = 30 // in minutes
+const ACTIVITY_RESET_PASSWORD = "Reset password successfully";
+
 module.exports = {
   attachmentIcons,
+  COOKIES_VALIDITY_PERIOD,
+  ACTIVITY_RESET_PASSWORD
 };

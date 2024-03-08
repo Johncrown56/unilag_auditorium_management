@@ -5,10 +5,10 @@ import solutionsIcon2 from "../assets/imgs/png-icons/our-solutions-icon-2.png"
 import solutionsIcon3 from "../assets/imgs/png-icons/our-solutions-icon-3.png"
 import solutionsIcon4 from "../assets/imgs/png-icons/our-solutions-icon-4.png"
 import { BiDollarCircle, BiMessageSquareDetail } from "react-icons/bi";
-import { BsCalendar, BsCreditCard, BsGear, BsPerson } from "react-icons/bs";
+import { BsCreditCard, BsGear, BsPerson } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
 import { PiWarehouseBold } from "react-icons/pi";
-import { HiCalendar, HiOutlineBookOpen } from "react-icons/hi2";
+import { HiCalendar, HiOutlineBookOpen, HiUser } from "react-icons/hi2";
 import moment from "moment";
 import { IMenu } from "../utils/interfaces";
 
@@ -171,6 +171,38 @@ export const menus: IMenu[] = [
         ],
       },
       {
+        name: "Manage Users",
+        link: "/users",
+        icon: <HiUser />,
+        submenus: [
+          {
+            name: "View Admin",
+            link: "/admin",
+          },
+          {
+            name: "View Users",
+            link: "/users",
+          },
+          {
+            name: "View Staffs",
+            link: "/staffs",
+          },
+          {
+            name: "View Organizations",
+            link: "/organizations",
+          },
+          {
+            name: "View Individuals",
+            link: "/individuals",
+          },
+          {
+            name: "View Students",
+            link: "/students",
+          },
+          
+        ],
+      },
+      {
         name: "Bookings",
         link: "/bookings/view",
         icon: <HiOutlineBookOpen />,
@@ -220,6 +252,8 @@ export const paymentOptions = [
 
 export const paymentStatus = ["All", "Approved", "Pending", "Cancelled"];
 
+export const CalendarColors = ['indigo', 'darkblue', 'brown', 'violet', 'purple', 'orange', 'pink', 'blueviolet', 'chocolate', 'coral', 'cornflowerblue', 'lightseagreen', 'royalblue', 'crimson', 'orchid', 'turquoise'];
+
 export const bookingColumns = [
   { name: 'name', label: 'Auditorium name' },
   { name: 'bookingId', label: 'Booking Id'},
@@ -235,6 +269,7 @@ export const bookingColumns = [
 export const featureColumns = [
   { name: 'name', label: 'Features name' },
   { name: 'id', label: 'Feature Id'},
+  { name: 'amount', label: 'Feature Amount'},
   { name: 'dateCreated', label: 'Date Created', mode: "date" }, 
   { name: 'dateUpdated', label: 'Date Updated', mode: "date" }, 
   { name: 'actions', label: 'Actions' }
@@ -247,6 +282,57 @@ export const categoryColumns =  [
   { name: 'dateUpdated', label: 'Date Updated', mode: "date" }, 
   { name: 'actions', label: 'Actions' }
 ]
+
+export const UserColumns = [
+  {name: '', label: 'S/N', mode: 'count'},
+  { name: 'firstName', label: 'First Name' },
+  { name: 'lastName', label: 'Last Name'},
+  { name: 'userCategoryId', label: 'User ID'},
+  { name: 'email', label: 'Email'},
+  { name: 'phone', label: 'Phone'},
+  { name: 'role', label: 'Role'},
+  { name: 'dateCreated', label: 'Date Created', mode: "date" },
+  { name: 'actions', label: 'Actions' }
+];
+
+export const bookingDetails = [
+  { name: "bookingId", label: "Booking ID" },
+  { name: "purpose", label: "Purpose" },
+  { name: "category.name", label: "Category" },
+  { name: "remarks", label: "Remarks" },
+  { name: "status", label: "Status" },
+  { name: "features", label: "Features", mode: "array" },
+  { name: "paymentStatus", label: "Payment Status", mode: "boolean" },
+  { name: "dateCreated", label: "Date Submitted", mode: "date" },
+  { name: "dateCreated", label: "Time Submitted", mode: "time" },
+];
+
+export const userDetails = [
+  { name: "user.firstName", label: "First Name" },
+  { name: "user.lastName", label: "Last Name" },
+  { name: "user.email", label: "Email" },
+  { name: "user.phone", label: "Phone Number" },
+  { name: "user.role", label: "Role" },
+  { name: "user.userCategory", label: "User Category" },
+  { name: "user.userCategoryId", label: "User Category ID" },
+];
+
+export const paymentDetails = [
+  { name: "payment.amount", label: "Amount", mode: "currency" },
+  { name: "payment.transactionID", label: "Transaction ID" },
+  { name: "payment.cautionFee", label: "Caution Fee", mode: "currency" },
+  {
+    name: "payment.cleaningCharges",
+    label: "Cleaning Charges",
+    mode: "currency",
+  },
+  { name: "payment.vat", label: "VAT Paid", mode: "currency" },
+  { name: "payment.dateCreated", label: "Date Created", mode: "date" },
+  { name: "payment.eventDays", label: "Event Days" },
+  { name: "payment.platform", label: "Payment platform" },
+  //{ name: "payment.remarks", label: "Payment Remarks" }, //) ? "payment.remarks : "Nil",},
+  { name: "payment.status", label: "Payment Status", mode: "boolean" }, //) ? "Paid" : "Not Paid",},
+];
 
 export const cssOverride: CSSProperties = {
   position: "fixed",
@@ -385,5 +471,26 @@ export const faqdata = [
   {
     question: "What are your business hours? ",
     answer: "8:00 AM – 5:00 PM weekdays excluding public holidays",
+  },
+];
+
+export const roles = ['user', 'admin', 'superadmin']
+
+export const paymentLink = [
+  {
+    category: "Student",
+    link: "http://students.unilag.tranzgate.com.ng/",
+  },
+  {
+    category: "Staff",
+    link: "http://staff.unilag.tranzgate.com.ng/",
+  },
+  {
+    category: "Individual",
+    link: "http://others.unilag.tranzgate.com.ng/",
+  },
+  {
+    category: "Organization",
+    link: "http://others.unilag.tranzgate.com.ng/",
   },
 ];

@@ -10,6 +10,7 @@ type Props = {
   type?: IResponseType;
   isLoading: boolean;
   mode: IModalMode;
+  submitText?: string;
   onSubmit?: () => void;
   setShowModal: (value: boolean) => void;
 };
@@ -24,7 +25,8 @@ const Modal = (props: Props) => {
     body,
     onSubmit,
     isLoading,
-    mode
+    mode,
+    submitText = "Proceed"
   } = props;
   return (
     <ModalContainer
@@ -37,6 +39,7 @@ const Modal = (props: Props) => {
       onSubmit={onSubmit}
       isLoading={isLoading}
       mode={mode}
+      submitText={submitText}
     />
   );
 };

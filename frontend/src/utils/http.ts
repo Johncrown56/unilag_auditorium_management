@@ -26,9 +26,7 @@ export const useNavigateAndClearToken = () => {
 
 export const fetchDataFromApi = async (url: string, params?: any) => {
   try {
-    const { data } = await api.get(url, {
-      params,
-    });
+    const { data } = await api.get(url, {params});
     console.log(data)
     return data;
   } catch (err) {

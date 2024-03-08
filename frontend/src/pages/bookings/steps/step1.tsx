@@ -10,7 +10,6 @@ import {
   IStepFormState,
 } from "../../../utils/interfaces";
 import Select from "react-select";
-//import { OptionsType } from "react-select";
 
 interface Props extends IStepFormState {
   params: Iparams;
@@ -39,9 +38,6 @@ type Iparams = {
   remarks: string;
   type: number;
 };
-
-// Define the type for the options array
-type OptionType = { value: string; label: string };
 
 const Step1 = (props: Props) => {
   const {

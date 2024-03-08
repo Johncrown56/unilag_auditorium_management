@@ -98,7 +98,7 @@ const Categories = (props: Props) => {
         <div className="mx-auto max-w-270">
           <Breadcrumb pageName="View Categories" />
           <Datatable
-            list={value?.slice()?.reverse()}
+            list={value}
             columns={categoryColumns}
             title={"Category"}
             idColumnName={"id"}

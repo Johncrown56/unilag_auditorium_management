@@ -145,7 +145,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary-500"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Student </span>
-              <span> {state.series[0]/ state.total * 100}% </span>
+              <span> {(state.series[0]/ state.total * 100).toFixed()}% </span>
             </p>
           </div>
         </div>
@@ -154,7 +154,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Staff </span>
-              <span> {state.series[1]/ state.total * 100}% </span>
+              <span> {(state.series[1]/ state.total * 100).toFixed()}% </span>
             </p>
           </div>
         </div>
@@ -163,7 +163,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Individual </span>
-              <span> {state.series[2]/ state.total * 100}% </span>
+              <span> { (state.series[2]/ state.total * 100).toFixed()} % </span>
             </p>
           </div>
         </div>
@@ -172,7 +172,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Organization </span>
-              <span> {state.series[3]/ state.total * 100}% </span>
+              <span> {(state.series[3]/ state.total * 100).toFixed()}% </span>
             </p>
           </div>
         </div>

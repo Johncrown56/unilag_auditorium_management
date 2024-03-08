@@ -23,10 +23,10 @@ export type IUser = {
   firstName: string;
   lastName: string;
   email: string;
-  image?: {
-    url: string | any;
-    publicId: string;
-  };
+  role: string;
+  userCategory: string;
+  userCategoryId?: string;
+  userId?: string;
 };
 
 export type IForgotPassword = {
@@ -38,6 +38,12 @@ export type IResetPassword = {
   password: string;
   confirmPassword: string;
   [key: string]: string;
+};
+
+export type IChangePassword = { 
+  oldPassword: string; 
+  newPassword: string;
+  confirmNewPassword?: string;
 };
 
 export interface IRequest {
@@ -235,4 +241,9 @@ export type IChangeStatus = {
   status: string;
 };
 
-export interface IFeat {id?: string, name: string, description: string}
+export interface IFeat {
+  id?: string;
+  name: string;
+  amount?: number;
+  description: string;
+}

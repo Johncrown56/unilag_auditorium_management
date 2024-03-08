@@ -44,7 +44,7 @@ const fetch = expressAsyncHandler(async (req, res) => {
   const userId = req.user.userId;
   const role = req.user.role;
   try {
-    const query = role === "admin" ? "SELECT * FROM `payment` " : "SELECT * FROM `payment` where userID = ?"
+    const query = role === "admin" ? "SELECT * FROM `payment` ORDER BY paymentID DESC" : "SELECT * FROM `payment` where userID = ? ORDER BY paymentID DESC"
     const values = role === "admin" ? [] : [userId]
     const result = await executeQuery(query, values);
     if (result) {
